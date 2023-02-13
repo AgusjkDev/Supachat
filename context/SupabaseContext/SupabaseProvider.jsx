@@ -17,7 +17,7 @@ export default function SupabaseProvider({ children }) {
             .single();
 
         if (result.error) {
-            return console.error(error);
+            return console.error(result.error);
         }
 
         setProfile(result.data);
@@ -73,7 +73,10 @@ export default function SupabaseProvider({ children }) {
             }
 
             setSession(data.session);
-            fetchProfile(data.session);
+
+            if (data.session) {
+                fetchProfile(data.session);
+            }
         });
 
         supabase.auth.onAuthStateChange((event, changedSession) => {
