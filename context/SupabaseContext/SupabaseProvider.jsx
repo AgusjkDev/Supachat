@@ -79,7 +79,7 @@ export default function SupabaseProvider({ children }) {
             }
         });
 
-        supabase.auth.onAuthStateChange((event, changedSession) => {
+        supabase.auth.onAuthStateChange((_, changedSession) => {
             if (!changedSession) {
                 setSession(changedSession);
             }
