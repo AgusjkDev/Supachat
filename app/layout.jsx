@@ -1,3 +1,7 @@
+"use client";
+
+import { SupabaseProvider } from "context";
+
 import "./globals.css";
 
 export default function RootLayout({ children }) {
@@ -5,7 +9,9 @@ export default function RootLayout({ children }) {
         <html lang="es">
             <head />
 
-            <body className="grid w-full min-h-screen place-items-center">{children}</body>
+            <body className="grid w-full min-h-screen place-items-center">
+                <SupabaseProvider>{children}</SupabaseProvider>
+            </body>
         </html>
     );
 }
