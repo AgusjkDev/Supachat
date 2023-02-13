@@ -9,7 +9,7 @@ export default function RootLayout({ children }) {
         <html lang="es">
             <head />
 
-            <body className="grid w-full min-h-screen place-items-center">
+            <body className="bg-background-900">
                 <SupabaseProvider>{children}</SupabaseProvider>
             </body>
         </html>
