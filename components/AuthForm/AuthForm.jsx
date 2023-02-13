@@ -3,48 +3,7 @@ import { useContext, useState } from "react";
 import { SupabaseContext } from "context";
 import FormButton from "./FormButton";
 import FormField from "./FormField";
-
-const loginForm = [
-    {
-        name: "email",
-        label: "Email",
-        type: "email",
-        placeholder: "Dirección de email",
-    },
-    {
-        name: "password",
-        label: "Contraseña",
-        type: "password",
-        placeholder: "Contraseña",
-    },
-];
-
-const signUpForm = [
-    {
-        name: "username",
-        label: "Usuario",
-        type: "text",
-        placeholder: "Nombre de usuario",
-    },
-    {
-        name: "email",
-        label: "Email",
-        type: "email",
-        placeholder: "Dirección de email",
-    },
-    {
-        name: "password",
-        label: "Contraseña",
-        type: "password",
-        placeholder: "Contraseña",
-    },
-    {
-        name: "confirmPassword",
-        label: "Confirmar contraseña",
-        type: "password",
-        placeholder: "Confirmar contraseña",
-    },
-];
+import { authForms } from "data";
 
 export default function AuthForm() {
     const { login, signUp } = useContext(SupabaseContext);
@@ -91,7 +50,7 @@ export default function AuthForm() {
                     className="flex flex-col w-full gap-5"
                     onSubmit={handleSubmit}
                 >
-                    {(activeForm === "login" ? loginForm : signUpForm).map(field => (
+                    {authForms[activeForm].map(field => (
                         <FormField key={field.name} {...field} />
                     ))}
 
