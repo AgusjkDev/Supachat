@@ -1,4 +1,4 @@
-import { useContext, useState } from "react";
+import { useContext, useState, useEffect } from "react";
 
 import { SupabaseContext } from "context";
 import FormButton from "./FormButton";
@@ -8,25 +8,37 @@ import { authForms } from "data";
 export default function AuthForm() {
     const { login, signUp } = useContext(SupabaseContext);
     const [activeForm, setActiveForm] = useState("login");
+    const [errorMessage, setErrorMessage] = useState("");
 
-    const handleSubmit = e => {
+    const handleSubmit = async e => {
         e.preventDefault();
 
         const fields = Object.fromEntries(new FormData(e.target));
         if (Object.values(fields).some(field => !field)) {
-            return console.error("Hay campos vacíos");
+            return setErrorMessage("¡Todos los campos son obligatorios!");
         }
 
         if (activeForm === "signup" && fields.password !== fields.confirmPassword) {
-            return console.error("Las contraseñas no coinciden");
+            return setErrorMessage("¡Las contraseñas no coinciden!");
         }
 
-        if (activeForm === "login") {
-            return login(...Object.values(fields));
-        }
+        const authFunction = activeForm === "login" ? login : signUp;
+        const authFunctionParams = Object.values({
+            ...fields,
+            ...(activeForm === "signup" && { confirmPassword: undefined }),
+        });
 
-        signUp(...Object.values({ ...fields, confirmPassword: undefined }));
+        const { success, error } = await authFunction(...authFunctionParams);
+        if (success) return;
+
+        return setErrorMessage(error);
     };
+
+    useEffect(() => {
+        if (!errorMessage) return;
+
+        setErrorMessage("");
+    }, [activeForm]);
 
     return (
         <div className="min-h-screen grid place-items-center w-full">
@@ -50,6 +62,12 @@ export default function AuthForm() {
                     className="flex flex-col w-full gap-5"
                     onSubmit={handleSubmit}
                 >
+                    {errorMessage && (
+                        <span className="p-1.5 bg-red-700 text-secondary rounded-sm text-center text-sm font-medium">
+                            {errorMessage}
+                        </span>
+                    )}
+
                     {authForms[activeForm].map(field => (
                         <FormField key={field.name} {...field} />
                     ))}

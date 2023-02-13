@@ -9,76 +9,92 @@ export default function SupabaseProvider({ children }) {
     const [profile, setProfile] = useState(null);
 
     const fetchProfile = async newSession => {
-        const result = await supabase
+        const { data, error } = await supabase
             .from("profiles")
             .select()
             .eq("email", newSession.user.email)
             .limit(1)
             .single();
 
-        if (result.error) {
-            return console.error(result.error);
+        if (error) {
+            return { success: false, error };
         }
 
-        setProfile(result.data);
+        setProfile(data);
+
+        return { success: true };
     };
 
-    const login = async (email, password) => {
+    const insertProfile = async profile => {
+        const { data, error } = await supabase.from("profiles").insert(profile).select().single();
+
+        if (error) {
+            return { success: false, error };
+        }
+
+        setProfile(data);
+
+        return { success: true };
+    };
+
+    const login = async (email, password, fromSignUp = false) => {
         const { data, error } = await supabase.auth.signInWithPassword({ email, password });
 
         if (error?.status === 400) {
-            return console.error("credenciales inválidas");
+            return {
+                success: false,
+                error: !fromSignUp ? "¡Credenciales inválidas!" : "¡Usuario ya registrado!",
+            };
         }
 
         if (error) {
-            return console.error(error);
+            return { success: false, error };
+        }
+
+        const { success, error: fetchError } = await fetchProfile(data.session);
+        if (!success) {
+            return { success, error: fetchError };
         }
 
         setSession(data.session);
-        fetchProfile(data.session);
+
+        return { success: true };
     };
 
     const signUp = async (username, email, password) => {
         const { data, error } = await supabase.auth.signUp({ email, password });
 
         if (error?.status === 400) {
-            return login(email, password);
+            return login(email, password, true);
         }
 
         if (error) {
-            return console.error(error);
+            return { success: false, error };
+        }
+
+        const { success, error: insertError } = await insertProfile({ username, email });
+        if (!success) {
+            return { success, insertError };
         }
 
         setSession(data.session);
 
-        const result = await supabase
-            .from("profiles")
-            .insert({ username, email })
-            .select()
-            .single();
-
-        if (result.error) {
-            return console.error(error);
-        }
-
-        setProfile(result.data);
+        return { success: true };
     };
 
     useEffect(() => {
         supabase.auth.getSession().then(result => {
             const { data, error } = result;
+            if (error) return;
 
-            if (error) {
-                return console.error(error);
-            }
+            const { session } = data;
+            if (!session) return;
 
-            setSession(data.session);
+            fetchProfile(session).then(({ success }) => {
+                if (!success) return;
 
-            if (data.session) {
-                return fetchProfile(data.session);
-            }
-
-            setProfile(null);
+                setSession(session);
+            });
         });
 
         supabase.auth.onAuthStateChange((_, changedSession) => {
