@@ -6,6 +6,22 @@ import supabase from "utils/supabase";
 
 export default function SupabaseProvider({ children }) {
     const [session, setSession] = useState(null);
+    const [profile, setProfile] = useState(null);
+
+    const fetchProfile = async newSession => {
+        const result = await supabase
+            .from("profiles")
+            .select()
+            .eq("email", newSession.user.email)
+            .limit(1)
+            .single();
+
+        if (result.error) {
+            return console.error(error);
+        }
+
+        setProfile(result.data);
+    };
 
     const login = async (email, password) => {
         const { data, error } = await supabase.auth.signInWithPassword({ email, password });
@@ -19,6 +35,7 @@ export default function SupabaseProvider({ children }) {
         }
 
         setSession(data.session);
+        fetchProfile(data.session);
     };
 
     const signUp = async (username, email, password) => {
@@ -34,7 +51,17 @@ export default function SupabaseProvider({ children }) {
 
         setSession(data.session);
 
-        await supabase.from("profiles").insert({ username, email });
+        const result = await supabase
+            .from("profiles")
+            .insert({ username, email })
+            .select()
+            .single();
+
+        if (result.error) {
+            return console.error(error);
+        }
+
+        setProfile(result.data);
     };
 
     useEffect(() => {
@@ -46,6 +73,7 @@ export default function SupabaseProvider({ children }) {
             }
 
             setSession(data.session);
+            fetchProfile(data.session);
         });
 
         supabase.auth.onAuthStateChange((event, changedSession) => {
@@ -56,7 +84,7 @@ export default function SupabaseProvider({ children }) {
     }, []);
 
     return (
-        <SupabaseContext.Provider value={{ supabase, session, login, signUp }}>
+        <SupabaseContext.Provider value={{ supabase, session, profile, login, signUp }}>
             {children}
         </SupabaseContext.Provider>
     );
