@@ -75,8 +75,10 @@ export default function SupabaseProvider({ children }) {
             setSession(data.session);
 
             if (data.session) {
-                fetchProfile(data.session);
+                return fetchProfile(data.session);
             }
+
+            setProfile(null);
         });
 
         supabase.auth.onAuthStateChange((_, changedSession) => {
