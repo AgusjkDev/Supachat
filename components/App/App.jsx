@@ -30,15 +30,17 @@ export default function App() {
                         {profile.username}
                     </h2>
 
-                    <button
-                        aria-label="Opciones"
-                        className="group relative grid h-11 w-11 place-items-center lg:h-10 lg:w-10"
-                        onClick={() => setShowOptions(prevState => !prevState)}
-                    >
-                        <Svg {...svgs.dots} />
+                    <div className="relative">
+                        <button
+                            aria-label="Opciones"
+                            className="group grid h-11 w-11 place-items-center lg:h-10 lg:w-10"
+                            onClick={() => setShowOptions(prevState => !prevState)}
+                        >
+                            <Svg {...svgs.dots} />
+                        </button>
 
                         {showOptions && (
-                            <div className="absolute top-12 right-1/3 z-[1] w-36 bg-background-800 text-white sm:right-auto sm:top-10">
+                            <div className="absolute top-10 right-1/4 z-[1] w-36 bg-background-800 text-white">
                                 <button
                                     className="w-full bg-background-500 p-3 text-xs font-medium uppercase text-secondary transition-colors duration-300 hover:bg-background-700 hover:text-primary"
                                     onClick={logout}
@@ -47,7 +49,7 @@ export default function App() {
                                 </button>
                             </div>
                         )}
-                    </button>
+                    </div>
                 </header>
 
                 <div className="max-h-[calc(100vh-77px)] overflow-y-auto lg:max-h-[calc(100vh-65px)]"></div>
