@@ -10,7 +10,7 @@ export default function App() {
     const [showOptions, setShowOptions] = useState(false);
 
     return (
-        <div className="flex bg-background-900">
+        <>
             <div className="flex w-full flex-col lg:max-w-md lg:flex-[2] lg:border-r-[1px] lg:border-r-background-700">
                 <header className="flex w-full items-center justify-around border-b-[1px] border-b-background-700 py-4 lg:py-3">
                     <button
@@ -40,7 +40,7 @@ export default function App() {
                         </button>
 
                         {showOptions && (
-                            <div className="absolute top-10 right-1/4 z-[1] w-36 bg-background-800 text-white">
+                            <div className="absolute top-10 right-1/4 z-[1] w-36 bg-background-800">
                                 <button
                                     className="w-full bg-background-500 p-3 text-xs font-medium uppercase text-secondary transition-colors duration-300 hover:bg-background-700 hover:text-primary"
                                     onClick={logout}
@@ -92,6 +92,6 @@ export default function App() {
 
                 <div className="max-h-[calc(100vh-65px)] min-h-[calc(100vh-65px)] overflow-y-auto"></div>
             </div>
-        </div>
+        </>
     );
 }

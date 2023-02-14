@@ -9,7 +9,7 @@ export default function RootLayout({ children }) {
         <html lang="es">
             <head />
 
-            <body className="bg-background-900">
+            <body className="flex bg-background-900">
                 <SupabaseProvider>{children}</SupabaseProvider>
             </body>
         </html>
