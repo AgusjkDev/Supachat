@@ -56,7 +56,11 @@ export default function App() {
             {/* Hidden on smaller devices */}
             <div className="hidden flex-[4] flex-col lg:flex">
                 <header className="grid grid-cols-3 place-items-center border-b-[1px] border-b-background-700 py-3">
-                    <form className="relative flex w-4/5" onSubmit={e => e.preventDefault()}>
+                    <form
+                        autoComplete="off"
+                        className="relative flex w-4/5"
+                        onSubmit={e => e.preventDefault()}
+                    >
                         <input
                             name="search"
                             type="text"
