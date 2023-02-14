@@ -41,9 +41,9 @@ export default function AuthForm() {
     }, [activeForm]);
 
     return (
-        <div className="min-h-screen grid place-items-center w-full">
-            <main className="flex max-w-lg md:max-w-xl 2xl:max-w-2xl sm:px-8 2xl:p-10 flex-col w-[90%] gap-8 bg-background-800 rounded-sm py-8 px-6">
-                <h1 className="text-3xl text-center font-black text-primary md:text-4xl">
+        <div className="grid min-h-screen w-full place-items-center">
+            <main className="flex w-[90%] max-w-lg flex-col gap-8 rounded-sm bg-background-800 py-8 px-6 sm:px-8 md:max-w-xl 2xl:max-w-2xl 2xl:p-10">
+                <h1 className="text-center text-3xl font-black text-primary md:text-4xl">
                     Supachat
                 </h1>
 
@@ -59,11 +59,11 @@ export default function AuthForm() {
 
                 <form
                     autoComplete="off"
-                    className="flex flex-col w-full gap-5"
+                    className="flex w-full flex-col gap-5"
                     onSubmit={handleSubmit}
                 >
                     {errorMessage && (
-                        <span className="p-1.5 bg-red-700 text-secondary rounded-sm text-center text-sm font-medium">
+                        <span className="rounded-sm bg-red-700 p-1.5 text-center text-sm font-medium text-secondary">
                             {errorMessage}
                         </span>
                     )}
@@ -74,7 +74,7 @@ export default function AuthForm() {
 
                     <button
                         type="submit"
-                        className="mt-4 transition-colors duration-300 hover:bg-background-700 hover:text-primary w-full p-4 font-bold text-secondary text-sm uppercase rounded-sm bg-background-500"
+                        className="mt-4 w-full rounded-sm bg-background-500 p-4 text-sm font-bold uppercase text-secondary transition-colors duration-300 hover:bg-background-700 hover:text-primary"
                     >
                         {activeForm === "login" ? "Iniciar Sesión" : "Registrarse"}
                     </button>

@@ -1,7 +1,7 @@
 export default function FormField({ name, label, type, placeholder }) {
     return (
-        <div key={name} className="flex flex-col w-full gap-1.5">
-            <label htmlFor={name} className="text-secondary font-medium">
+        <div key={name} className="flex w-full flex-col gap-1.5">
+            <label htmlFor={name} className="font-medium text-secondary">
                 {label}
             </label>
 
@@ -10,7 +10,7 @@ export default function FormField({ name, label, type, placeholder }) {
                 name={name}
                 type={type}
                 placeholder={placeholder}
-                className="w-full rounded-sm bg-background-600 text-secondary p-4 text-sm placeholder:text-secondary-dark focus:outline-2 focus:outline focus:outline-background-900"
+                className="w-full rounded-sm bg-background-600 p-4 text-sm text-secondary placeholder:text-secondary-dark focus:outline focus:outline-2 focus:outline-background-900"
             />
         </div>
     );
