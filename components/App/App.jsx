@@ -1,4 +1,4 @@
-import { useContext } from "react";
+import { useContext, useState } from "react";
 
 import { SupabaseContext } from "context";
 import Svg from "./Svg";
@@ -6,7 +6,8 @@ import ProfilePicture from "./ProfilePicture";
 import { svgs } from "data";
 
 export default function App() {
-    const { profile } = useContext(SupabaseContext);
+    const { profile, logout } = useContext(SupabaseContext);
+    const [showOptions, setShowOptions] = useState(false);
 
     return (
         <div className="flex bg-background-900">
@@ -35,6 +36,17 @@ export default function App() {
                         onClick={() => setShowOptions(prevState => !prevState)}
                     >
                         <Svg {...svgs.dots} />
+
+                        {showOptions && (
+                            <div className="absolute top-12 right-1/3 z-[1] w-36 bg-background-800 text-white sm:right-auto sm:top-10">
+                                <button
+                                    className="w-full bg-background-500 p-3 text-xs font-medium uppercase text-secondary transition-colors duration-300 hover:bg-background-700 hover:text-primary"
+                                    onClick={logout}
+                                >
+                                    Cerrar Sesión
+                                </button>
+                            </div>
+                        )}
                     </button>
                 </header>
 
