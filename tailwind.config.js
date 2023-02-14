@@ -13,7 +13,6 @@ module.exports = {
                     900: "#1c1c1c",
                 },
                 secondary: {
-                    darker: "#505050",
                     dark: "#a0a0a0",
                     DEFAULT: "#ededed",
                 },
