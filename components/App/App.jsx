@@ -3,6 +3,7 @@ import { useContext, useState } from "react";
 import { SupabaseContext } from "context";
 import Svg from "./Svg";
 import ProfilePicture from "./ProfilePicture";
+import Search from "./Search";
 import { svgs } from "data";
 
 export default function App() {
@@ -52,31 +53,17 @@ export default function App() {
                     </div>
                 </header>
 
-                <div className="max-h-[calc(100vh-77px)] overflow-y-auto lg:max-h-[calc(100vh-65px)]"></div>
+                <div className="max-h-[calc(100vh-77px)] overflow-y-auto lg:max-h-[calc(100vh-65px)]">
+                    <div className="lg:hidden">
+                        <Search />
+                    </div>
+                </div>
             </div>
 
             {/* Hidden on smaller devices */}
             <div className="hidden flex-[4] flex-col lg:flex">
                 <header className="grid grid-cols-3 place-items-center border-b-[1px] border-b-background-700 py-3">
-                    <form
-                        autoComplete="off"
-                        className="relative flex w-4/5"
-                        onSubmit={e => e.preventDefault()}
-                    >
-                        <input
-                            name="search"
-                            type="text"
-                            placeholder="Buscar personas..."
-                            className="h-10 w-full rounded-sm border-[1px] border-background-700 bg-background-900 pr-10 pl-2 text-sm text-secondary placeholder:text-secondary-darker focus:outline focus:outline-2 focus:outline-background-800"
-                        />
-
-                        <button
-                            aria-label="Buscar Personas"
-                            className="group absolute right-0 grid h-10 w-10 place-items-center"
-                        >
-                            <Svg {...svgs.search} />
-                        </button>
-                    </form>
+                    <Search />
 
                     <h1 className="text-center text-lg font-black text-primary">Supachat</h1>
 
