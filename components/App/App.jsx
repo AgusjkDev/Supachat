@@ -1,4 +1,4 @@
-import { useContext } from "react";
+import { useContext, useState } from "react";
 
 import { SupabaseContext } from "context";
 import Svg from "./Svg";
@@ -6,7 +6,8 @@ import ProfilePicture from "./ProfilePicture";
 import { svgs } from "data";
 
 export default function App() {
-    const { profile } = useContext(SupabaseContext);
+    const { profile, logout } = useContext(SupabaseContext);
+    const [showOptions, setShowOptions] = useState(false);
 
     return (
         <div className="flex bg-background-900">
@@ -31,9 +32,21 @@ export default function App() {
 
                     <button
                         aria-label="Opciones"
-                        className="grid w-11 group lg:w-10 lg:h-10 h-11 place-items-center"
+                        className="grid w-11 group lg:w-10 lg:h-10 h-11 place-items-center relative"
+                        onClick={() => setShowOptions(prevState => !prevState)}
                     >
                         <Svg {...svgs.dots} />
+
+                        {showOptions && (
+                            <div className="absolute top-12 right-1/3 sm:right-auto sm:top-10 z-[1] bg-background-800 w-36 text-white">
+                                <button
+                                    className="transition-colors duration-300 hover:bg-background-700 hover:text-primary w-full p-3 font-medium text-secondary text-xs uppercase bg-background-500"
+                                    onClick={logout}
+                                >
+                                    Cerrar Sesión
+                                </button>
+                            </div>
+                        )}
                     </button>
                 </header>
 
