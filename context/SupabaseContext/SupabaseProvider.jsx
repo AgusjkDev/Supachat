@@ -82,8 +82,6 @@ export default function SupabaseProvider({ children }) {
         return { success: true };
     };
 
-    const logout = () => supabase.auth.signOut();
-
     useEffect(() => {
         supabase.auth.getSession().then(result => {
             const { data, error } = result;
@@ -107,7 +105,7 @@ export default function SupabaseProvider({ children }) {
     }, []);
 
     return (
-        <SupabaseContext.Provider value={{ supabase, session, profile, login, signUp, logout }}>
+        <SupabaseContext.Provider value={{ supabase, session, profile, login, signUp }}>
             {children}
         </SupabaseContext.Provider>
     );
