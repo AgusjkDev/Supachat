@@ -82,7 +82,7 @@ export default function AuthForm() {
                     onSubmit={handleSubmit}
                 >
                     {errorMessage && (
-                        <span className="rounded-sm bg-red-700 p-1.5 text-center text-sm font-medium text-secondary">
+                        <span className="rounded-sm bg-red-700 p-2 text-center text-sm font-medium text-secondary">
                             {errorMessage}
                         </span>
                     )}
