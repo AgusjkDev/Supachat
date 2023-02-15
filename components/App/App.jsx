@@ -53,11 +53,11 @@ export default function App() {
                     </div>
                 </header>
 
-                <div className="max-h-[calc(100vh-77px)] overflow-y-auto lg:max-h-[calc(100vh-65px)]">
-                    <div className="lg:hidden">
-                        <Search />
-                    </div>
+                <div className="sticky top-0 lg:hidden">
+                    <Search />
                 </div>
+
+                <div className="max-h-[calc(100vh-77px-53px)] min-h-[calc(100vh-77px-53px)] overflow-y-auto lg:max-h-[calc(100vh-65px)] lg:min-h-[calc(100vh-65px)]"></div>
             </div>
 
             {/* Hidden on smaller devices */}

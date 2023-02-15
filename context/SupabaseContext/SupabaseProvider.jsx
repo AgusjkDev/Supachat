@@ -84,6 +84,21 @@ export default function SupabaseProvider({ children }) {
 
     const logout = () => supabase.auth.signOut();
 
+    const searchQuery = async query => {
+        const { data, error } = await supabase
+            .from("profiles")
+            .select()
+            .ilike("username", `${query}%`);
+
+        if (error) {
+            console.error(error);
+
+            return null;
+        }
+
+        return data;
+    };
+
     useEffect(() => {
         supabase.auth.getSession().then(result => {
             const { data, error } = result;
@@ -107,7 +122,9 @@ export default function SupabaseProvider({ children }) {
     }, []);
 
     return (
-        <SupabaseContext.Provider value={{ supabase, session, profile, login, signUp, logout }}>
+        <SupabaseContext.Provider
+            value={{ supabase, session, profile, login, signUp, logout, searchQuery }}
+        >
             {children}
         </SupabaseContext.Provider>
     );
