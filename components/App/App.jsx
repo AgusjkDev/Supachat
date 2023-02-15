@@ -21,15 +21,7 @@ export default function App() {
                         <ProfilePicture {...profile} />
                     </button>
 
-                    {/* Hidden on larger devices */}
-                    <h2 className="text-center text-xl font-black text-primary lg:hidden">
-                        Supachat
-                    </h2>
-
-                    {/* Hidden on smaller devices */}
-                    <h2 className="hidden text-center font-bold text-primary lg:block">
-                        {profile.username}
-                    </h2>
+                    <h2 className="text-center font-bold text-primary">{profile.username}</h2>
 
                     <div className="relative">
                         <button
