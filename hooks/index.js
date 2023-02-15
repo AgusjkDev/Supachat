@@ -1,1 +1,2 @@
-export { default as useSearch } from "./useSearch";
+export { default as useQuery } from "./useQuery";
+export { default as useResults } from "./useResults";

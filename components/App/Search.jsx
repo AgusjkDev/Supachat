@@ -1,14 +1,16 @@
 import Svg from "./Svg";
 import ProfilePicture from "./ProfilePicture";
-import { useSearch } from "hooks";
+import { useQuery, useResults } from "hooks";
 import { svgs } from "data";
 
 export default function Search() {
-    const { query, results, setQuery, search } = useSearch();
+    const { query, updateQuery } = useQuery();
+    const { results, getResults } = useResults(query);
 
-    const handleSearch = e => {
+    const handleSubmit = e => {
         e.preventDefault();
-        search();
+
+        getResults.flush();
     };
 
     return (
@@ -16,14 +18,13 @@ export default function Search() {
             <form
                 autoComplete="off"
                 className="relative flex w-full items-center lg:w-4/5"
-                onSubmit={handleSearch}
+                onSubmit={handleSubmit}
             >
                 <input
                     type="text"
                     placeholder="Buscar personas..."
-                    value={query}
-                    onChange={e => setQuery(e.target.value)}
                     className="w-full border-b-[1px] border-background-700 bg-background-900 p-4 pr-12 text-sm text-secondary placeholder:text-secondary-darker focus:outline focus:outline-2 focus:outline-background-800 lg:h-10 lg:rounded-sm lg:border-[1px] lg:py-0 lg:pr-10 lg:pl-2"
+                    onChange={e => updateQuery(e.target.value)}
                 />
 
                 <button
