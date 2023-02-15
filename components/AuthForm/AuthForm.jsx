@@ -3,7 +3,8 @@ import { useContext, useState, useEffect } from "react";
 import { SupabaseContext } from "context";
 import FormButton from "./FormButton";
 import FormField from "./FormField";
-import { authForms } from "data";
+import { authForms, regex } from "data";
+import { reduceSpaces } from "helpers";
 
 export default function AuthForm() {
     const { login, signUp } = useContext(SupabaseContext);
@@ -18,20 +19,38 @@ export default function AuthForm() {
             return setErrorMessage("¡Todos los campos son obligatorios!");
         }
 
-        if (activeForm === "signup" && fields.password !== fields.confirmPassword) {
+        const { username, email, password, confirmPassword } = fields;
+        const isSignupForm = activeForm === "signup";
+
+        const cleanUsername = isSignupForm ? reduceSpaces(username) : undefined;
+        if (isSignupForm && !regex.username.test(cleanUsername)) {
+            return setErrorMessage(
+                "¡El nombre de usuario debe tener al menos 3 carácteres, solo letras, números, puntos y guión bajo!"
+            );
+        }
+
+        const cleanEmail = reduceSpaces(email);
+        if (!regex.email.test(cleanEmail)) {
+            return setErrorMessage("¡Dirección de email inválida!");
+        }
+
+        if (!regex.password.test(password)) {
+            return setErrorMessage(
+                "¡La contraseña debe tener al menos 8 carácteres, una minúscula, una mayúscula, un número y un símbolo!"
+            );
+        }
+
+        if (isSignupForm && password !== confirmPassword) {
             return setErrorMessage("¡Las contraseñas no coinciden!");
         }
 
-        const authFunction = activeForm === "login" ? login : signUp;
-        const authFunctionParams = Object.values({
-            ...fields,
-            ...(activeForm === "signup" && { confirmPassword: undefined }),
-        });
+        const authFunction = isSignupForm ? signUp : login;
 
-        const { success, error } = await authFunction(...authFunctionParams);
-        if (success) return;
+        const { error } = await authFunction(
+            ...(isSignupForm ? [cleanUsername, cleanEmail, password] : [cleanEmail, password])
+        );
 
-        return setErrorMessage(error);
+        if (error) return setErrorMessage(error);
     };
 
     useEffect(() => {
