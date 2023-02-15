@@ -41,7 +41,7 @@ export default function Search() {
                         <button
                             key={id}
                             className="flex w-full items-center gap-3.5 border-b-[1px] border-b-background-700 bg-background-900 p-4 transition-colors duration-300 last:border-none hover:bg-background-800 lg:p-3"
-                            onClick={e => console.log(e.currentTarget)}
+                            onClick={() => {}}
                         >
                             <div className="h-9 w-9">
                                 <ProfilePicture
