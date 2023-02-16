@@ -3,10 +3,12 @@ import { useState, useEffect } from "react";
 import SupabaseContext from "./SupabaseContext";
 
 import supabase from "utils/supabase";
+import { MIN_LOADING_SCREEN_TIME } from "constants";
 
 export default function SupabaseProvider({ children }) {
     const [session, setSession] = useState(null);
     const [profile, setProfile] = useState(null);
+    const [showLoadingScreen, setShowLoadingScreen] = useState(true);
 
     const fetchProfile = async newSession => {
         const { data, error } = await supabase
@@ -99,31 +101,50 @@ export default function SupabaseProvider({ children }) {
         return data;
     };
 
+    const removeLoadingScreen = (consumedTime = 0) => {
+        setTimeout(
+            () => setShowLoadingScreen(false),
+            consumedTime < MIN_LOADING_SCREEN_TIME ? MIN_LOADING_SCREEN_TIME - consumedTime : 0
+        );
+    };
+
     useEffect(() => {
+        const startTime = performance.now();
+
         supabase.auth.getSession().then(result => {
             const { data, error } = result;
-            if (error) return;
-
             const { session } = data;
-            if (!session) return;
+
+            if (error || !data.session) return removeLoadingScreen(performance.now() - startTime);
 
             fetchProfile(session).then(({ success }) => {
-                if (!success) return;
+                if (success) setSession(session);
 
-                setSession(session);
+                removeLoadingScreen(performance.now() - startTime);
             });
         });
 
         supabase.auth.onAuthStateChange((_, changedSession) => {
             if (!changedSession) {
+                setShowLoadingScreen(true);
                 setSession(changedSession);
+                removeLoadingScreen();
             }
         });
     }, []);
 
     return (
         <SupabaseContext.Provider
-            value={{ supabase, session, profile, login, signUp, logout, searchQuery }}
+            value={{
+                supabase,
+                session,
+                profile,
+                showLoadingScreen,
+                login,
+                signUp,
+                logout,
+                searchQuery,
+            }}
         >
             {children}
         </SupabaseContext.Provider>

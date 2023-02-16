@@ -3,16 +3,23 @@ import { useContext, useState, useEffect } from "react";
 import { SupabaseContext } from "context";
 import FormButton from "./FormButton";
 import FormField from "./FormField";
+import { Spinner } from "components";
 import { authForms, regex } from "data";
 import { reduceSpaces } from "helpers";
 
 export default function AuthForm() {
     const { login, signUp } = useContext(SupabaseContext);
     const [activeForm, setActiveForm] = useState("login");
+    const [isSubmitting, setIsSubmitting] = useState(false);
     const [errorMessage, setErrorMessage] = useState("");
+
+    const isSignupForm = activeForm === "signup";
 
     const handleSubmit = async e => {
         e.preventDefault();
+        setIsSubmitting(true);
+
+        if (errorMessage) setErrorMessage("");
 
         const fields = Object.fromEntries(new FormData(e.target));
         if (Object.values(fields).some(field => !field)) {
@@ -20,7 +27,6 @@ export default function AuthForm() {
         }
 
         const { username, email, password, confirmPassword } = fields;
-        const isSignupForm = activeForm === "signup";
 
         const cleanUsername = isSignupForm ? reduceSpaces(username) : undefined;
         if (isSignupForm && !regex.username.test(cleanUsername)) {
@@ -51,6 +57,8 @@ export default function AuthForm() {
         );
 
         if (error) return setErrorMessage(error);
+
+        setIsSubmitting(false);
     };
 
     useEffect(() => {
@@ -58,6 +66,12 @@ export default function AuthForm() {
 
         setErrorMessage("");
     }, [activeForm]);
+
+    useEffect(() => {
+        if (!errorMessage) return;
+
+        setIsSubmitting(false);
+    }, [errorMessage]);
 
     return (
         <div className="grid min-h-screen w-full place-items-center">
@@ -67,11 +81,21 @@ export default function AuthForm() {
                 </h1>
 
                 <div className="flex w-full">
-                    <FormButton form="login" activeForm={activeForm} setActiveForm={setActiveForm}>
+                    <FormButton
+                        form="login"
+                        activeForm={activeForm}
+                        isSubmitting={isSubmitting}
+                        setActiveForm={setActiveForm}
+                    >
                         Iniciar Sesión
                     </FormButton>
 
-                    <FormButton form="signup" activeForm={activeForm} setActiveForm={setActiveForm}>
+                    <FormButton
+                        form="signup"
+                        activeForm={activeForm}
+                        isSubmitting={isSubmitting}
+                        setActiveForm={setActiveForm}
+                    >
                         Registrarse
                     </FormButton>
                 </div>
@@ -88,14 +112,25 @@ export default function AuthForm() {
                     )}
 
                     {authForms[activeForm].map(field => (
-                        <FormField key={field.name} {...field} />
+                        <FormField key={field.name} isSubmitting={isSubmitting} {...field} />
                     ))}
 
                     <button
                         type="submit"
-                        className="mt-4 w-full rounded-sm bg-background-500 p-4 text-sm font-bold uppercase text-secondary transition-colors duration-300 hover:bg-background-700 hover:text-primary"
+                        disabled={isSubmitting}
+                        className={`mt-4 flex w-full justify-center rounded-sm bg-background-500 p-4 text-sm font-bold uppercase text-secondary ${
+                            isSubmitting
+                                ? "bg-background-700 hover:cursor-not-allowed"
+                                : "transition-colors duration-300 hover:bg-background-700 hover:text-primary"
+                        }`}
                     >
-                        {activeForm === "login" ? "Iniciar Sesión" : "Registrarse"}
+                        {isSubmitting ? (
+                            <Spinner />
+                        ) : isSignupForm ? (
+                            "Registrarse"
+                        ) : (
+                            "Iniciar Sesión"
+                        )}
                     </button>
                 </form>
             </main>
