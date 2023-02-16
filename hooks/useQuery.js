@@ -12,5 +12,5 @@ export default function useSearch() {
         setQuery(sanitizedQuery.length >= 3 ? sanitizedQuery : "");
     }, [search]);
 
-    return { query, updateQuery: setSearch };
+    return { search, query, updateSearch: setSearch };
 }

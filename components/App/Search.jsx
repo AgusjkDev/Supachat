@@ -4,7 +4,7 @@ import { useQuery, useResults } from "hooks";
 import { svgs } from "data";
 
 export default function Search() {
-    const { query, updateQuery } = useQuery();
+    const { search, query, updateSearch } = useQuery();
     const { results, getResults } = useResults(query);
 
     const handleSubmit = e => {
@@ -24,14 +24,17 @@ export default function Search() {
                     type="text"
                     placeholder="Buscar personas..."
                     className="w-full border-b-[1px] border-background-700 bg-background-900 p-4 pr-12 text-sm text-secondary placeholder:text-secondary-darker focus:outline focus:outline-2 focus:outline-background-800 lg:h-10 lg:rounded-sm lg:border-[1px] lg:py-0 lg:pr-10 lg:pl-2"
-                    onChange={e => updateQuery(e.target.value)}
+                    value={search}
+                    onChange={e => updateSearch(e.target.value)}
                 />
 
                 <button
-                    type="submit"
+                    aria-label={search ? "Limpiar Búsqueda" : "Buscar"}
+                    type={search ? "button" : "submit"}
                     className="group absolute right-0 mr-1 grid h-11 w-11 place-items-center lg:mr-0 lg:h-10 lg:w-10"
+                    onClick={() => search && updateSearch("")}
                 >
-                    <Svg {...svgs.search} />
+                    <Svg {...(search ? svgs.x : svgs.search)} />
                 </button>
             </form>
 
