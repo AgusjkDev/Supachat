@@ -41,8 +41,9 @@ export default function Search() {
             {results.length > 0 && (
                 <div className="absolute min-h-[calc(100vh-77px-53px)] w-full border-b-[1px] border-background-700 bg-background-900 lg:top-10 lg:min-h-0 lg:w-4/5 lg:rounded-b-sm lg:border-x-[1px]">
                     {results.map(({ id, username, profile_picture, status }) => (
-                        <button
+                        <div
                             key={id}
+                            role="button"
                             className="flex w-full justify-between border-b-[1px] border-b-background-700 p-4 pr-0 transition-colors duration-300 last:border-none hover:bg-background-800 lg:p-3.5 lg:pr-0"
                         >
                             <div className="flex gap-3">
@@ -68,7 +69,7 @@ export default function Search() {
                             >
                                 <Svg {...svgs.dots} />
                             </button>
-                        </button>
+                        </div>
                     ))}
                 </div>
             )}
