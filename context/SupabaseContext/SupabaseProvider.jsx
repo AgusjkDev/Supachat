@@ -15,12 +15,9 @@ export default function SupabaseProvider({ children }) {
             .from("profiles")
             .select()
             .eq("email", newSession.user.email)
-            .limit(1)
             .single();
 
-        if (error) {
-            return { success: false, error };
-        }
+        if (error) return { success: false, error };
 
         setProfile(data);
 
@@ -28,11 +25,13 @@ export default function SupabaseProvider({ children }) {
     };
 
     const insertProfile = async profile => {
-        const { data, error } = await supabase.from("profiles").insert(profile).select().single();
+        const { data, error } = await supabase
+            .from("profiles")
+            .insert({ ...profile, email: undefined })
+            .select()
+            .single();
 
-        if (error) {
-            return { success: false, error };
-        }
+        if (error) return { success: false, error };
 
         setProfile(data);
 
