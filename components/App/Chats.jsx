@@ -37,7 +37,7 @@ export default function Chats() {
                                     </span>
 
                                     <span className="text-xs text-secondary-dark">
-                                        {lastMessage && lastMessage.content}
+                                        {lastMessage && lastMessage.content}&nbsp;
                                     </span>
                                 </div>
                             </div>
