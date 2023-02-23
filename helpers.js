@@ -2,8 +2,7 @@ import { regex } from "data";
 
 export const reduceSpaces = str => str.replace(regex.removeExtraSpaces, " ").trim();
 
-export const formatDate = (dateString, isChatTimestamp = false) => {
-    const date = new Date(dateString);
+export const formatDate = (date, isChatTimestamp = false) => {
     const hourFormat = {
         hour: "2-digit",
         minute: "2-digit",

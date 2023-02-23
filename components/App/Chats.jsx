@@ -21,9 +21,9 @@ export default function Chats() {
                 </span>
             ) : (
                 <>
-                    {chats.map(({ chat_id, created_at, profile, lastMessage }) => (
+                    {chats.map(({ chatId, profile, lastMessage }) => (
                         <button
-                            key={chat_id}
+                            key={chatId}
                             className="flex w-full justify-between border-b-[1px] border-b-background-700 p-4 transition-colors duration-300 last:border-none hover:bg-background-800 lg:p-3.5"
                         >
                             <div className="flex gap-3">
@@ -44,10 +44,7 @@ export default function Chats() {
 
                             <div className="flex flex-col justify-evenly">
                                 <span className="text-xs text-secondary-dark">
-                                    {formatDate(
-                                        lastMessage ? lastMessage.created_at : created_at,
-                                        true
-                                    )}
+                                    {formatDate(lastMessage.createdAt, true)}
                                 </span>
                             </div>
                         </button>

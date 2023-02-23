@@ -125,7 +125,6 @@ export default function SupabaseProvider({ children }) {
             .select(
                 `
                 chat_id,
-                created_at,
                 profiles:profile_id(
                     created_at,
                     username,
@@ -150,13 +149,21 @@ export default function SupabaseProvider({ children }) {
             return null;
         }
 
-        return data.map(chat => ({
-            ...chat,
-            profile: chat.profiles,
-            lastMessage: chat.chats.messages,
-            profiles: undefined,
-            chats: undefined,
-        }));
+        return data
+            .map(({ chat_id, profiles, chats }) => {
+                const message = chats.messages;
+
+                return {
+                    chatId: chat_id,
+                    profile: profiles,
+                    lastMessage: {
+                        profileId: message.profile_id,
+                        createdAt: new Date(message.created_at),
+                        content: message.content,
+                    },
+                };
+            })
+            .sort((a, b) => b.lastMessage.createdAt - a.lastMessage.createdAt);
     };
 
     const removeLoadingScreen = (consumedTime = 0) => {
