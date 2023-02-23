@@ -100,6 +100,65 @@ export default function SupabaseProvider({ children }) {
         return data;
     };
 
+    const getChatsId = async () => {
+        const { data, error } = await supabase
+            .from("chat_participants")
+            .select("chat_id")
+            .eq("profile_id", profile.id);
+
+        if (error) {
+            console.error(error);
+
+            return null;
+        }
+
+        return data.map(({ chat_id }) => chat_id);
+    };
+
+    const getChats = async () => {
+        const chatsId = await getChatsId();
+        if (!chatsId) return null;
+        if (chatsId.length === 0) return [];
+
+        const { data, error } = await supabase
+            .from("chat_participants")
+            .select(
+                `
+                chat_id,
+                created_at,
+                profiles:profile_id(
+                    created_at,
+                    username,
+                    profile_picture,
+                    status
+                ),
+                chats:chat_id(
+                    messages:last_message(
+                        profile_id,
+                        created_at,
+                        content
+                    )
+                )
+            `
+            )
+            .in("chat_id", chatsId)
+            .neq("profile_id", profile.id);
+
+        if (error) {
+            console.error(error);
+
+            return null;
+        }
+
+        return data.map(chat => ({
+            ...chat,
+            profile: chat.profiles,
+            lastMessage: chat.chats.messages,
+            profiles: undefined,
+            chats: undefined,
+        }));
+    };
+
     const removeLoadingScreen = (consumedTime = 0) => {
         setTimeout(
             () => setShowLoadingScreen(false),
@@ -143,6 +202,7 @@ export default function SupabaseProvider({ children }) {
                 signUp,
                 logout,
                 searchQuery,
+                getChats,
             }}
         >
             {children}

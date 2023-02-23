@@ -1,4 +1,5 @@
 const initialState = {
+    chats: null,
     showOptions: false,
 };
 

@@ -5,6 +5,7 @@ import Svg from "./Svg";
 import ProfilePicture from "./ProfilePicture";
 import Options from "./Options";
 import Search from "./Search";
+import Chats from "./Chats";
 import { svgs } from "data";
 
 export default function App() {
@@ -30,7 +31,9 @@ export default function App() {
                     <Search />
                 </div>
 
-                <div className="max-h-[calc(100vh-77px-53px)] min-h-[calc(100vh-77px-53px)] overflow-y-auto lg:max-h-[calc(100vh-65px)] lg:min-h-[calc(100vh-65px)]"></div>
+                <div className="max-h-[calc(100vh-77px-53px)] min-h-[calc(100vh-77px-53px)] overflow-y-auto lg:max-h-[calc(100vh-65px)] lg:min-h-[calc(100vh-65px)]">
+                    <Chats />
+                </div>
             </div>
 
             {/* Hidden on smaller devices */}
