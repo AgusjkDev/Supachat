@@ -1,19 +1,19 @@
-import { useContext, useState } from "react";
+import { useContext } from "react";
 
-import { SupabaseContext } from "context";
+import { SupabaseContext, AppContext } from "context";
 import Svg from "./Svg";
 import { svgs } from "data";
 
 export default function Options() {
     const { logout } = useContext(SupabaseContext);
-    const [showOptions, setShowOptions] = useState(false);
+    const { showOptions, toggleShowOptions } = useContext(AppContext);
 
     return (
         <div className="relative">
             <button
                 aria-label="Opciones"
                 className="group grid h-11 w-11 place-items-center lg:h-10 lg:w-10"
-                onClick={() => setShowOptions(prevState => !prevState)}
+                onClick={toggleShowOptions}
             >
                 <Svg {...svgs.dots} />
             </button>

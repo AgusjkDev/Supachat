@@ -1,6 +1,6 @@
 "use client";
 
-import { SupabaseProvider } from "context";
+import { SupabaseProvider, AppProvider } from "context";
 
 import "./globals.css";
 
@@ -10,7 +10,9 @@ export default function RootLayout({ children }) {
             <head />
 
             <body className="flex bg-background-900">
-                <SupabaseProvider>{children}</SupabaseProvider>
+                <SupabaseProvider>
+                    <AppProvider>{children}</AppProvider>
+                </SupabaseProvider>
             </body>
         </html>
     );
