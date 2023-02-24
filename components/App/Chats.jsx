@@ -12,42 +12,48 @@ export default function Chats() {
     const noChats = chats?.length === 0;
 
     return (
-        <div className={isLoading || noChats ? "flex h-full items-center justify-center" : ""}>
+        <div
+            {...((isLoading || noChats) && {
+                className: "flex h-full items-center justify-center",
+            })}
+        >
             {isLoading ? (
                 <Spinner />
             ) : noChats ? (
-                <span className="text-center text-xl font-bold text-primary lg:text-2xl">
+                <span className="text-center text-xl font-bold text-primary">
                     ¡No tienes chats!
                 </span>
             ) : (
                 <>
                     {chats.map(({ chatId, profile, lastMessage }) => (
-                        <button
+                        <div
                             key={chatId}
-                            className="flex w-full justify-between border-b-[1px] border-b-background-700 p-4 transition-colors duration-300 last:border-none hover:bg-background-800 lg:p-3.5"
+                            role="button"
+                            className="flex border-b-[1px] border-b-background-700 p-3.5 transition-colors duration-300 last:border-none hover:bg-background-800"
                         >
-                            <div className="flex gap-3">
-                                <div className="h-11 w-11">
-                                    <ProfilePicture {...profile} />
-                                </div>
+                            <div className="flex w-full gap-3">
+                                <ProfilePicture
+                                    username={profile.username}
+                                    profile_picture={profile.profile_picture}
+                                />
 
-                                <div className="flex flex-col items-start justify-evenly">
-                                    <span className="text-sm font-medium text-secondary">
-                                        {profile.username}
-                                    </span>
+                                <div className="flex w-full flex-col justify-evenly">
+                                    <div className="flex w-full items-center justify-between">
+                                        <span className="text-sm font-medium text-secondary">
+                                            {profile.username}
+                                        </span>
+
+                                        <span className="text-xs text-secondary-dark">
+                                            {formatDate(lastMessage.createdAt, true)}
+                                        </span>
+                                    </div>
 
                                     <span className="text-xs text-secondary-dark">
-                                        {lastMessage && lastMessage.content}&nbsp;
+                                        {lastMessage.content}
                                     </span>
                                 </div>
                             </div>
-
-                            <div className="flex flex-col justify-evenly">
-                                <span className="text-xs text-secondary-dark">
-                                    {formatDate(lastMessage.createdAt, true)}
-                                </span>
-                            </div>
-                        </button>
+                        </div>
                     ))}
                 </>
             )}

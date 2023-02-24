@@ -74,7 +74,7 @@ export default function AuthForm() {
     }, [errorMessage]);
 
     return (
-        <div className="grid min-h-screen w-full place-items-center">
+        <div className="grid min-h-screen w-full place-items-center bg-background-900">
             <main className="flex w-[90%] max-w-lg flex-col gap-8 rounded-sm bg-background-800 py-8 px-6 sm:px-8 md:max-w-xl 2xl:max-w-2xl 2xl:p-10">
                 <h1 className="text-center text-3xl font-black text-primary md:text-4xl">
                     Supachat

@@ -1,7 +1,7 @@
 import { useContext } from "react";
 
 import { SupabaseContext, AppContext } from "context";
-import Svg from "./Svg";
+import SvgButton from "./SvgButton";
 import { svgs } from "data";
 
 export default function Options() {
@@ -10,13 +10,12 @@ export default function Options() {
 
     return (
         <div className="relative">
-            <button
-                aria-label="Opciones"
-                className="group grid h-11 w-11 place-items-center lg:h-10 lg:w-10"
+            <SvgButton
+                ariaLabel="Ver opciones"
+                title="Opciones"
                 onClick={toggleShowOptions}
-            >
-                <Svg {...svgs.dots} />
-            </button>
+                svg={svgs.options}
+            />
 
             {showOptions && (
                 <div className="absolute top-10 right-1/4 z-[1] w-36 bg-background-800">
