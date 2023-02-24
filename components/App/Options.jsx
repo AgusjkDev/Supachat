@@ -2,6 +2,7 @@ import { useContext } from "react";
 
 import { SupabaseContext, AppContext } from "context";
 import SvgButton from "./SvgButton";
+import { Button } from "components";
 import { svgs } from "data";
 
 export default function Options() {
@@ -19,12 +20,7 @@ export default function Options() {
 
             {showOptions && (
                 <div className="absolute top-10 right-1/4 z-[1] w-36 bg-background-800">
-                    <button
-                        className="w-full bg-background-500 p-3 text-xs font-medium uppercase text-secondary transition-colors duration-300 hover:bg-background-700 hover:text-primary"
-                        onClick={logout}
-                    >
-                        Cerrar Sesión
-                    </button>
+                    <Button onClick={logout}>Cerrar Sesión</Button>
                 </div>
             )}
         </div>

@@ -3,7 +3,7 @@ import { useContext, useState, useEffect } from "react";
 import { SupabaseContext } from "context";
 import FormButton from "./FormButton";
 import FormField from "./FormField";
-import { Spinner } from "components";
+import { Spinner, Button } from "components";
 import { authForms, regex } from "data";
 import { reduceSpaces } from "helpers";
 
@@ -115,7 +115,24 @@ export default function AuthForm() {
                         <FormField key={field.name} isSubmitting={isSubmitting} {...field} />
                     ))}
 
-                    <button
+                    <Button
+                        type="submit"
+                        disabled={isSubmitting}
+                        className={`mt-4 flex justify-center rounded-sm${
+                            isSubmitting ? " bg-background-700 hover:cursor-not-allowed" : ""
+                        }`}
+                        big
+                    >
+                        {isSubmitting ? (
+                            <Spinner />
+                        ) : isSignupForm ? (
+                            "Registrarse"
+                        ) : (
+                            "Iniciar Sesión"
+                        )}
+                    </Button>
+
+                    {/* <button
                         type="submit"
                         disabled={isSubmitting}
                         className={`mt-4 flex w-full justify-center rounded-sm bg-background-500 p-4 text-sm font-bold uppercase text-secondary ${
@@ -131,7 +148,7 @@ export default function AuthForm() {
                         ) : (
                             "Iniciar Sesión"
                         )}
-                    </button>
+                    </button> */}
                 </form>
             </main>
         </div>
