@@ -9,6 +9,11 @@ export default function Options() {
     const { logout } = useContext(SupabaseContext);
     const { showOptions, toggleShowOptions } = useContext(AppContext);
 
+    const handleLogout = () => {
+        logout();
+        toggleShowOptions();
+    };
+
     return (
         <div className="relative">
             <SvgButton
@@ -20,7 +25,7 @@ export default function Options() {
 
             {showOptions && (
                 <div className="absolute top-10 right-1/4 z-[1] w-36 bg-background-800">
-                    <Button onClick={logout}>Cerrar Sesión</Button>
+                    <Button onClick={handleLogout}>Cerrar Sesión</Button>
                 </div>
             )}
         </div>
