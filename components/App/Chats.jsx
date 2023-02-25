@@ -44,7 +44,7 @@ export default function Chats() {
                                         </span>
 
                                         <span className="text-xs text-secondary-dark">
-                                            {formatDate(lastMessage.createdAt, true)}
+                                            {formatDate(lastMessage.createdAt, "chat")}
                                         </span>
                                     </div>
 
