@@ -134,12 +134,10 @@ export default function SupabaseProvider({ children }) {
                     profile_picture,
                     status
                 ),
-                chats:chat_id(
-                    messages:last_message(
-                        profile_id,
-                        created_at,
-                        content
-                    )
+                messages:last_message(
+                    profile_id,
+                    created_at,
+                    content
                 )
             `
             )
@@ -153,18 +151,14 @@ export default function SupabaseProvider({ children }) {
         }
 
         return data
-            .map(({ chat_id, profiles, chats }) => {
-                const message = chats.messages;
-
-                return {
-                    chat_id,
-                    profile: profiles,
-                    last_message: {
-                        ...message,
-                        created_at: new Date(message.created_at),
-                    },
-                };
-            })
+            .map(({ chat_id, profiles, messages }) => ({
+                chat_id,
+                profile: profiles,
+                last_message: {
+                    ...messages,
+                    created_at: new Date(messages.created_at),
+                },
+            }))
             .sort((a, b) => b.last_message.created_at - a.last_message.created_at);
     };
 
@@ -231,6 +225,8 @@ export default function SupabaseProvider({ children }) {
                 searchQuery,
                 getChats,
                 getChatMessages,
+                sendMessage,
+                createChatAndSendMessage,
             }}
         >
             {children}
