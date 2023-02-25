@@ -225,8 +225,6 @@ export default function SupabaseProvider({ children }) {
                 searchQuery,
                 getChats,
                 getChatMessages,
-                sendMessage,
-                createChatAndSendMessage,
             }}
         >
             {children}
