@@ -36,7 +36,11 @@ export default function App() {
                 <Search search={search} updateSearch={updateSearch} getResults={getResults} />
 
                 <div className="scrollbar max-h-[calc(100vh-73px-53px)] min-h-[calc(100vh-73px-53px)] overflow-y-auto lg:max-h-[calc(100vh-65px-53px)] lg:min-h-[calc(100vh-65px-53px)]">
-                    {results.length > 0 ? <Results results={results} /> : <Chats />}
+                    {results.length > 0 ? (
+                        <Results results={results} clearResults={() => updateSearch("")} />
+                    ) : (
+                        <Chats />
+                    )}
                 </div>
             </div>
 

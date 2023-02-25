@@ -3,10 +3,12 @@ import { useContext } from "react";
 import { AppContext } from "context";
 import ProfilePicture from "./ProfilePicture";
 
-export default function Results({ results }) {
+export default function Results({ results, clearResults }) {
     const { chats, setOpenedChat } = useContext(AppContext);
 
     const handleResultClick = async resultProfile => {
+        clearResults();
+
         const foundChat = chats.find(chat => chat.profile.id === resultProfile.id);
 
         setOpenedChat(foundChat ? foundChat : { profile: resultProfile, messages: [] });
