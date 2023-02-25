@@ -38,10 +38,10 @@ export default function AppProvider({ children }) {
         });
     };
 
-    const setChatMessages = (chatId, chatMessages) => {
-        const updatedOpenedChat = { ...state.openedChat, messages: chatMessages };
+    const setChatMessages = (openedChat, chatMessages) => {
+        const updatedOpenedChat = { ...openedChat, messages: chatMessages };
         const updatedChats = state.chats.map(chat =>
-            chat.chatId === chatId ? updatedOpenedChat : chat
+            chat.chat_id === openedChat.chat_id ? updatedOpenedChat : chat
         );
 
         dispatch({
@@ -74,7 +74,7 @@ export default function AppProvider({ children }) {
 
         setIsLoadingMessages(true);
         getChatMessages(openedChat.chat_id, abortController.signal).then(chatMessages => {
-            if (chatMessages) setChatMessages(openedChat.chat_id, chatMessages);
+            if (chatMessages) setChatMessages(openedChat, chatMessages);
 
             setIsLoadingMessages(false);
         });
