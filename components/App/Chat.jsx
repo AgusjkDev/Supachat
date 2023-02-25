@@ -12,6 +12,7 @@ export default function Chat({ openedChat, exitOpenedChat }) {
     const { sendMessage } = useContext(AppContext);
     const [message, setMessage] = useState("");
     const lastMessageRef = useRef();
+    const messageInputRef = useRef();
 
     const { profile: chatterProfile, messages } = openedChat;
     const { username, status } = chatterProfile;
@@ -31,6 +32,12 @@ export default function Chat({ openedChat, exitOpenedChat }) {
 
         lastMessageRef.current.scrollIntoView();
     }, [messages]);
+
+    useEffect(() => {
+        if (message) setMessage("");
+
+        messageInputRef.current.focus();
+    }, [openedChat]);
 
     return (
         <div className="flex min-h-screen flex-col">
@@ -132,6 +139,7 @@ export default function Chat({ openedChat, exitOpenedChat }) {
                     onSubmit={e => handleMessageSubmit(e)}
                 >
                     <input
+                        ref={messageInputRef}
                         type="text"
                         placeholder="Escribe un mensaje..."
                         className="w-full rounded-sm border-[1px] border-background-700 bg-transparent p-2.5 text-sm text-secondary placeholder:text-secondary-darker focus:outline focus:outline-2 focus:outline-background-800 lg:p-2"
