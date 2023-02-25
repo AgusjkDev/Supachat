@@ -28,6 +28,12 @@ export default function AppReducer(state, action) {
                 ...payload,
             };
 
+        case types.UPDATE_CHATS:
+            return {
+                ...state,
+                ...payload,
+            };
+
         case types.SET_SHOW_OPTIONS:
             return {
                 ...state,

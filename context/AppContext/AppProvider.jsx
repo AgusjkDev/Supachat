@@ -7,7 +7,14 @@ import initialState from "./initialState";
 import types from "./types";
 
 export default function AppProvider({ children }) {
-    const { session, profile, getChats, getChatMessages } = useContext(SupabaseContext);
+    const {
+        session,
+        profile,
+        getChats,
+        getChatMessages,
+        sendMessageToChat,
+        createChatAndSendMessage,
+    } = useContext(SupabaseContext);
     const [state, dispatch] = useReducer(AppReducer, initialState);
 
     const setChats = chats => {
@@ -53,6 +60,32 @@ export default function AppProvider({ children }) {
         });
     };
 
+    const updateChats = chat => {
+        dispatch({
+            type: types.UPDATE_CHATS,
+            payload: {
+                openedChat: chat,
+                chats: [chat, ...state.chats],
+            },
+        });
+    };
+
+    const sendMessage = async (chat, message) => {
+        const chatExists = Boolean(chat.chat_id);
+
+        if (chatExists) {
+            const updatedMessages = await sendMessageToChat(chat, message);
+            if (updatedMessages) setChatMessages(chat, updatedMessages);
+
+            return;
+        }
+
+        const createdChat = await createChatAndSendMessage(chat.profile, message);
+        if (!createdChat) return;
+
+        updateChats(createdChat);
+    };
+
     const toggleShowOptions = () => {
         dispatch({
             type: types.SET_SHOW_OPTIONS,
@@ -83,7 +116,16 @@ export default function AppProvider({ children }) {
     }, [state.openedChat]);
 
     return (
-        <AppContext.Provider value={{ ...state, setOpenedChat, exitOpenedChat, toggleShowOptions }}>
+        <AppContext.Provider
+            value={{
+                ...state,
+                setOpenedChat,
+                exitOpenedChat,
+                setChatMessages,
+                sendMessage,
+                toggleShowOptions,
+            }}
+        >
             {children}
         </AppContext.Provider>
     );

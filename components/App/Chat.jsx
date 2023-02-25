@@ -1,6 +1,6 @@
-import { useContext, useRef, useEffect } from "react";
+import { useContext, useState, useRef, useEffect } from "react";
 
-import { SupabaseContext } from "context";
+import { SupabaseContext, AppContext } from "context";
 import SvgButton from "./SvgButton";
 import ProfilePicture from "./ProfilePicture";
 import { Spinner } from "components";
@@ -9,10 +9,22 @@ import { formatDate } from "helpers";
 
 export default function Chat({ openedChat, exitOpenedChat }) {
     const { profile } = useContext(SupabaseContext);
+    const { sendMessage } = useContext(AppContext);
+    const [message, setMessage] = useState("");
     const lastMessageRef = useRef();
 
     const { profile: chatterProfile, messages } = openedChat;
     const { username, status } = chatterProfile;
+
+    const handleMessageSubmit = async e => {
+        e.preventDefault();
+
+        const cleanMessage = message.trim();
+        if (!cleanMessage) return;
+
+        await sendMessage(openedChat, cleanMessage);
+        setMessage("");
+    };
 
     useEffect(() => {
         if (!messages || messages.length === 0) return;
@@ -115,13 +127,16 @@ export default function Chat({ openedChat, exitOpenedChat }) {
 
             <footer className="fixed bottom-0 w-full border-t-[1px] border-t-background-700 bg-background-900 p-3.5 lg:static lg:bottom-auto lg:mt-auto lg:p-3">
                 <form
+                    autoComplete="off"
                     className="mx-auto flex w-[95%] items-center justify-center gap-3 lg:gap-4"
-                    onSubmit={e => e.preventDefault()}
+                    onSubmit={e => handleMessageSubmit(e)}
                 >
                     <input
                         type="text"
                         placeholder="Escribe un mensaje..."
                         className="w-full rounded-sm border-[1px] border-background-700 bg-transparent p-2.5 text-sm text-secondary placeholder:text-secondary-darker focus:outline focus:outline-2 focus:outline-background-800 lg:p-2"
+                        value={message}
+                        onChange={e => setMessage(e.target.value)}
                     />
 
                     <SvgButton

@@ -169,6 +169,51 @@ export default function SupabaseProvider({ children }) {
         );
     };
 
+    const sendMessageToChat = async (chat, message) => {
+        const { data, error } = await supabase
+            .from("messages")
+            .insert({ content: message, profile_id: profile.id, chat_id: chat.chat_id })
+            .select()
+            .single();
+
+        if (error) {
+            console.error(error);
+
+            return null;
+        }
+
+        return groupMessages([
+            ...chat.messages.flatMap(msg => msg),
+            { ...data, created_at: new Date(data.created_at) },
+        ]);
+    };
+
+    const createChatAndSendMessage = async (chatterProfile, message) => {
+        const { data, error } = await supabase.rpc("create_chat_and_send_message", {
+            profile_id: profile.id,
+            chatter_profile_id: chatterProfile.id,
+            message,
+        });
+
+        if (error) {
+            console.error(error);
+
+            return null;
+        }
+
+        return {
+            chat_id: data.chat_id,
+            profile: chatterProfile,
+            messages: groupMessages([
+                {
+                    ...data,
+                    created_at: new Date(data.created_at),
+                    profile_id: profile.id,
+                },
+            ]),
+        };
+    };
+
     const removeLoadingScreen = (consumedTime = 0) => {
         setTimeout(
             () => setShowLoadingScreen(false),
@@ -214,6 +259,8 @@ export default function SupabaseProvider({ children }) {
                 searchQuery,
                 getChats,
                 getChatMessages,
+                sendMessageToChat,
+                createChatAndSendMessage,
             }}
         >
             {children}
