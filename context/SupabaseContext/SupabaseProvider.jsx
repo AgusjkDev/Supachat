@@ -133,11 +133,6 @@ export default function SupabaseProvider({ children }) {
                     username,
                     profile_picture,
                     status
-                ),
-                messages:last_message(
-                    profile_id,
-                    created_at,
-                    content
                 )
             `
             )
@@ -150,16 +145,10 @@ export default function SupabaseProvider({ children }) {
             return null;
         }
 
-        return data
-            .map(({ chat_id, profiles, messages }) => ({
-                chat_id,
-                profile: profiles,
-                last_message: {
-                    ...messages,
-                    created_at: new Date(messages.created_at),
-                },
-            }))
-            .sort((a, b) => b.last_message.created_at - a.last_message.created_at);
+        return data.map(({ chat_id, profiles }) => ({
+            chat_id,
+            profile: profiles,
+        }));
     };
 
     const getChatMessages = async (chatId, signal) => {

@@ -26,7 +26,7 @@ export default function Chats() {
             ) : (
                 <>
                     {chats.map(chat => {
-                        const { chat_id, profile, last_message } = chat;
+                        const { chat_id, profile } = chat;
 
                         return (
                             <div
@@ -45,13 +45,11 @@ export default function Chats() {
                                             </span>
 
                                             <span className="text-xs text-secondary-dark">
-                                                {formatDate(last_message.created_at, "chat")}
+                                                &nbsp;
                                             </span>
                                         </div>
 
-                                        <span className="text-xs text-secondary-dark">
-                                            {last_message.content}
-                                        </span>
+                                        <span className="text-xs text-secondary-dark">&nbsp;</span>
                                     </div>
                                 </div>
                             </div>
