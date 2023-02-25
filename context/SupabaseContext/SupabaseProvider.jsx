@@ -128,6 +128,7 @@ export default function SupabaseProvider({ children }) {
                 `
                 chat_id,
                 profiles:profile_id(
+                    id,
                     created_at,
                     username,
                     profile_picture,

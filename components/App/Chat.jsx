@@ -15,7 +15,7 @@ export default function Chat({ openedChat, exitOpenedChat }) {
     const { username, status } = chatterProfile;
 
     useEffect(() => {
-        if (!messages) return;
+        if (!messages || messages.length === 0) return;
 
         lastMessageRef.current.scrollIntoView();
     }, [messages]);
