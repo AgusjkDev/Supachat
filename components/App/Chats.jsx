@@ -26,11 +26,11 @@ export default function Chats() {
             ) : (
                 <>
                     {chats.map(chat => {
-                        const { chatId, profile, lastMessage } = chat;
+                        const { chat_id, profile, last_message } = chat;
 
                         return (
                             <div
-                                key={chatId}
+                                key={chat_id}
                                 role="button"
                                 className="flex border-b-[1px] border-b-background-700 p-3.5 transition-colors duration-300 last:border-none hover:bg-background-800"
                                 onClick={() => setOpenedChat(chat)}
@@ -45,12 +45,12 @@ export default function Chats() {
                                             </span>
 
                                             <span className="text-xs text-secondary-dark">
-                                                {formatDate(lastMessage.createdAt, "chat")}
+                                                {formatDate(last_message.created_at, "chat")}
                                             </span>
                                         </div>
 
                                         <span className="text-xs text-secondary-dark">
-                                            {lastMessage.content}
+                                            {last_message.content}
                                         </span>
                                     </div>
                                 </div>

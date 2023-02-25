@@ -15,7 +15,7 @@ export default function SupabaseProvider({ children }) {
         const { data, error } = await supabase
             .from("profiles")
             .select()
-            .eq("email", newSession.user.email)
+            .eq("id", newSession.user.id)
             .single();
 
         if (error) return { success: false, error };
@@ -28,7 +28,7 @@ export default function SupabaseProvider({ children }) {
     const insertProfile = async profile => {
         const { data, error } = await supabase
             .from("profiles")
-            .insert({ ...profile, email: undefined })
+            .insert({ ...profile })
             .select()
             .single();
 
@@ -74,7 +74,7 @@ export default function SupabaseProvider({ children }) {
             return { success: false, error };
         }
 
-        const { success, error: insertError } = await insertProfile({ username, email });
+        const { success, error: insertError } = await insertProfile({ username });
         if (!success) {
             return { success, insertError };
         }
@@ -155,16 +155,15 @@ export default function SupabaseProvider({ children }) {
                 const message = chats.messages;
 
                 return {
-                    chatId: chat_id,
+                    chat_id,
                     profile: profiles,
-                    lastMessage: {
-                        profileId: message.profile_id,
-                        createdAt: new Date(message.created_at),
-                        content: message.content,
+                    last_message: {
+                        ...message,
+                        created_at: new Date(message.created_at),
                     },
                 };
             })
-            .sort((a, b) => b.lastMessage.createdAt - a.lastMessage.createdAt);
+            .sort((a, b) => b.last_message.created_at - a.last_message.created_at);
     };
 
     const getChatMessages = async (chatId, signal) => {

@@ -73,8 +73,8 @@ export default function AppProvider({ children }) {
         const abortController = new AbortController();
 
         setIsLoadingMessages(true);
-        getChatMessages(openedChat.chatId, abortController.signal).then(chatMessages => {
-            if (chatMessages) setChatMessages(openedChat.chatId, chatMessages);
+        getChatMessages(openedChat.chat_id, abortController.signal).then(chatMessages => {
+            if (chatMessages) setChatMessages(openedChat.chat_id, chatMessages);
 
             setIsLoadingMessages(false);
         });
