@@ -24,7 +24,27 @@ export const formatDate = (date, format) => {
 
             return Intl.DateTimeFormat("es", isToday ? hourFormat : dateFormat).format(date);
 
+        case "message":
+            return Intl.DateTimeFormat("es", isToday ? hourFormat : dateFormat).format(date);
+
         default:
             return Intl.DateTimeFormat("es", fullFormat).format(date);
     }
+};
+
+export const groupMessages = messages => {
+    const groupedMessages = messages.reduce((acc, message) => {
+        const lastGroup = acc[acc.length - 1];
+        const lastMessage = lastGroup && lastGroup[lastGroup.length - 1];
+
+        if (lastMessage && lastMessage.profile_id === message.profile_id) {
+            lastGroup.push(message);
+        } else {
+            acc.push([message]);
+        }
+
+        return acc;
+    }, []);
+
+    return groupedMessages;
 };

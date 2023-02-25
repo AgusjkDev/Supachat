@@ -3,6 +3,7 @@ import { useState, useEffect } from "react";
 import SupabaseContext from "./SupabaseContext";
 
 import supabase from "utils/supabase";
+import { groupMessages } from "helpers";
 import { MIN_LOADING_SCREEN_TIME } from "constants";
 
 export default function SupabaseProvider({ children }) {
@@ -166,6 +167,24 @@ export default function SupabaseProvider({ children }) {
             .sort((a, b) => b.lastMessage.createdAt - a.lastMessage.createdAt);
     };
 
+    const getChatMessages = async (chatId, signal) => {
+        const { data, error } = await supabase
+            .from("messages")
+            .select()
+            .eq("chat_id", chatId)
+            .abortSignal(signal);
+
+        if (error) {
+            console.error(error);
+
+            return null;
+        }
+
+        return groupMessages(
+            data.map(message => ({ ...message, created_at: new Date(message.created_at) }))
+        );
+    };
+
     const removeLoadingScreen = (consumedTime = 0) => {
         setTimeout(
             () => setShowLoadingScreen(false),
@@ -210,6 +229,7 @@ export default function SupabaseProvider({ children }) {
                 logout,
                 searchQuery,
                 getChats,
+                getChatMessages,
             }}
         >
             {children}
