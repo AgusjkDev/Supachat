@@ -90,6 +90,7 @@ export default function SupabaseProvider({ children }) {
         const { data, error } = await supabase
             .from("profiles")
             .select()
+            .neq("id", profile.id)
             .ilike("username", `${query}%`);
 
         if (error) {
