@@ -1,9 +1,8 @@
 import { useContext } from "react";
 
 import { AppContext } from "context";
-import Spinner from "components/Spinner";
 import ProfilePicture from "./ProfilePicture";
-import { formatDate } from "helpers";
+import { Spinner } from "components";
 
 export default function Chats() {
     const { chats, setOpenedChat } = useContext(AppContext);
