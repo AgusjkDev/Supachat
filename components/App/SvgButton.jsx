@@ -8,6 +8,8 @@ export default function SvgButton({
     small = false,
 }) {
     const handleClick = e => {
+        if (type === "submit") return;
+
         e.stopPropagation();
         onClick();
     };
