@@ -1,6 +1,6 @@
 CREATE OR REPLACE FUNCTION create_chat_and_send_message(
     profile_id uuid, 
-    other_profile_id uuid, 
+    chatter_profile_id uuid, 
     message text
 ) 
 RETURNS messages
