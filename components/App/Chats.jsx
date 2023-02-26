@@ -2,6 +2,7 @@ import { useContext } from "react";
 
 import { AppContext } from "context";
 import ProfilePicture from "./ProfilePicture";
+import Options from "./Options";
 import { Spinner } from "components";
 
 export default function Chats() {
@@ -31,24 +32,26 @@ export default function Chats() {
                             <div
                                 key={chat_id}
                                 role="button"
-                                className="flex border-b-[1px] border-b-background-700 p-3.5 transition-colors duration-300 last:border-none hover:bg-background-800"
+                                className="group flex gap-2.5 border-b-[1px] border-background-700 p-3.5 transition-colors duration-300 last:border-none hover:bg-background-800"
                                 onClick={() => setOpenedChat(chat)}
                             >
-                                <div className="flex w-full gap-3">
-                                    <ProfilePicture {...profile} />
+                                <ProfilePicture {...profile} />
 
-                                    <div className="flex w-full flex-col justify-evenly">
-                                        <div className="flex w-full items-center justify-between">
-                                            <span className="text-sm font-medium text-secondary">
-                                                {profile.username}
-                                            </span>
-
-                                            <span className="text-xs text-secondary-dark">
-                                                &nbsp;
-                                            </span>
-                                        </div>
+                                <div className="flex w-full justify-between">
+                                    <div className="flex flex-col justify-evenly">
+                                        <span className="text-sm font-medium text-secondary">
+                                            {profile.username}
+                                        </span>
 
                                         <span className="text-xs text-secondary-dark">&nbsp;</span>
+                                    </div>
+
+                                    <div className="flex flex-col justify-evenly">
+                                        <span className="text-xs text-secondary-dark">&nbsp;</span>
+
+                                        <div className="opacity-0 transition-opacity duration-300 group-hover:opacity-100">
+                                            <Options options={[]} small />
+                                        </div>
                                     </div>
                                 </div>
                             </div>
