@@ -131,24 +131,6 @@ export default function AuthForm() {
                             "Iniciar Sesión"
                         )}
                     </Button>
-
-                    {/* <button
-                        type="submit"
-                        disabled={isSubmitting}
-                        className={`mt-4 flex w-full justify-center rounded-sm bg-background-500 p-4 text-sm font-bold uppercase text-secondary ${
-                            isSubmitting
-                                ? "bg-background-700 hover:cursor-not-allowed"
-                                : "transition-colors duration-300 hover:bg-background-700 hover:text-primary"
-                        }`}
-                    >
-                        {isSubmitting ? (
-                            <Spinner />
-                        ) : isSignupForm ? (
-                            "Registrarse"
-                        ) : (
-                            "Iniciar Sesión"
-                        )}
-                    </button> */}
                 </form>
             </main>
         </div>
