@@ -20,7 +20,11 @@ export default function Options({ options, small = false }) {
             />
 
             {showOptions && (
-                <div className="absolute top-10 right-1/4 z-[1] w-36 bg-background-800">
+                <div
+                    className={`absolute right-1/4 z-[1] w-36 bg-background-800 ${
+                        small ? "top-8" : "top-10"
+                    }`}
+                >
                     {options.map(({ key, children, onClick }) => (
                         <Button
                             key={key}
