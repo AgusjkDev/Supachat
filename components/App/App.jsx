@@ -13,7 +13,7 @@ import { useQuery, useResults } from "hooks";
 
 export default function App() {
     const { profile } = useContext(SupabaseContext);
-    const { openedChat, alert, exitOpenedChat, setAlert } = useContext(AppContext);
+    const { openedChat, alert, setOpenedChat, setAlert } = useContext(AppContext);
     const { search, query, updateSearch } = useQuery();
     const { results, getResults } = useResults(query);
 
@@ -51,7 +51,9 @@ export default function App() {
                         openedChat ? "fixed min-h-screen w-full" : "hidden"
                     }`}
                 >
-                    {openedChat && <Chat openedChat={openedChat} exitOpenedChat={exitOpenedChat} />}
+                    {openedChat && (
+                        <Chat openedChat={openedChat} exitOpenedChat={() => setOpenedChat(null)} />
+                    )}
                 </div>
             </main>
 

@@ -32,13 +32,6 @@ export default function AppProvider({ children }) {
         });
     };
 
-    const exitOpenedChat = () => {
-        dispatch({
-            type: types.SET_OPENED_CHAT,
-            payload: null,
-        });
-    };
-
     const setIsLoadingMessages = newValue => {
         dispatch({
             type: types.SET_IS_LOADING_MESSAGES,
@@ -143,7 +136,6 @@ export default function AppProvider({ children }) {
             value={{
                 ...state,
                 setOpenedChat,
-                exitOpenedChat,
                 setChatMessages,
                 sendMessage,
                 toggleShowOptions,
