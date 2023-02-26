@@ -36,6 +36,8 @@ export default function Chat({ openedChat, exitOpenedChat }) {
     useEffect(() => {
         if (message) setMessage("");
 
+        if (document.documentElement.clientWidth <= 1024) return;
+
         messageInputRef.current.focus();
     }, [openedChat]);
 
