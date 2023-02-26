@@ -2,7 +2,7 @@ import { useState, useEffect } from "react";
 
 import SupabaseContext from "./SupabaseContext";
 
-import supabase from "utils/supabase";
+import { supabase } from "utils";
 import { groupMessages } from "helpers";
 import { IS_DEVELOPMENT_MODE, MIN_LOADING_SCREEN_TIME } from "constants";
 
