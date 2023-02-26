@@ -7,6 +7,7 @@ export default function ProfilePicture({ username, profile_picture }) {
                 aria-label={`Ver perfil de ${username}`}
                 title="Perfil"
                 className="h-11 w-11 rounded-full border-2 border-transparent transition-colors hover:border-primary"
+                onClick={e => e.stopPropagation()}
             >
                 <Image
                     alt={`Foto de perfil de ${username}`}

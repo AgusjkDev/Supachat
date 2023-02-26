@@ -7,6 +7,11 @@ export default function SvgButton({
     svg,
     small = false,
 }) {
+    const handleClick = e => {
+        e.stopPropagation();
+        onClick();
+    };
+
     return (
         <button
             aria-label={ariaLabel}
@@ -15,7 +20,7 @@ export default function SvgButton({
             className={`group/svg grid place-items-center${className ? ` ${className}` : ""} ${
                 small ? "h-7 w-7" : "h-8 w-8"
             }`}
-            onClick={onClick}
+            onClick={handleClick}
         >
             <svg
                 xmlns="http://www.w3.org/2000/svg"
