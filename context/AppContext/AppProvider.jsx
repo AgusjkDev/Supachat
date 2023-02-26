@@ -19,6 +19,13 @@ export default function AppProvider({ children }) {
     } = useContext(SupabaseContext);
     const [state, dispatch] = useReducer(AppReducer, initialState);
 
+    const setAlert = alert => {
+        dispatch({
+            type: types.SET_ALERT,
+            payload: alert,
+        });
+    };
+
     const setChats = chats => {
         dispatch({
             type: types.SET_CHATS,
@@ -67,16 +74,6 @@ export default function AppProvider({ children }) {
         });
     };
 
-    const updateChats = chat => {
-        dispatch({
-            type: types.UPDATE_CHATS,
-            payload: {
-                openedChat: chat,
-                chats: [chat, ...state.chats],
-            },
-        });
-    };
-
     const sendMessage = async (chat, message) => {
         const chatExists = Boolean(chat.chat_id);
 
@@ -92,15 +89,22 @@ export default function AppProvider({ children }) {
         const createdChat = await createChatAndSendMessage(chat.profile, message);
         if (!createdChat) return setAlert("¡Hubo un error al enviar el mensaje!");
 
-        updateChats(createdChat);
-    };
-
-    const setAlert = alert => {
         dispatch({
-            type: types.SET_ALERT,
-            payload: alert,
+            type: types.UPDATE_CHATS,
+            payload: {
+                openedChat: createdChat,
+                chats: [createdChat, ...state.chats],
+            },
         });
     };
+
+    useEffect(() => {
+        if (!state.alert || !ALERT_TIMEOUT) return;
+
+        const timeoutId = setTimeout(() => setAlert(""), ALERT_TIMEOUT);
+
+        return () => clearTimeout(timeoutId);
+    }, [state.alert]);
 
     useEffect(() => {
         if (!session || !profile) return;
@@ -129,23 +133,15 @@ export default function AppProvider({ children }) {
         return () => abortController.abort();
     }, [state.openedChat]);
 
-    useEffect(() => {
-        if (!state.alert || !ALERT_TIMEOUT) return;
-
-        const timeoutId = setTimeout(() => setAlert(""), ALERT_TIMEOUT);
-
-        return () => clearTimeout(timeoutId);
-    }, [state.alert]);
-
     return (
         <AppContext.Provider
             value={{
                 ...state,
+                setAlert,
                 setOpenedChat,
                 setChatHidden,
                 setChatMessages,
                 sendMessage,
-                setAlert,
             }}
         >
             {children}

@@ -1,8 +1,8 @@
 const initialState = {
+    alert: "",
     chats: null,
     openedChat: null,
     isLoadingMessages: false,
-    alert: "",
 };
 
 export default initialState;

@@ -11,6 +11,13 @@ export default function SupabaseProvider({ children }) {
     const [profile, setProfile] = useState(null);
     const [showLoadingScreen, setShowLoadingScreen] = useState(true);
 
+    const removeLoadingScreen = (consumedTime = 0) => {
+        setTimeout(
+            () => setShowLoadingScreen(false),
+            consumedTime < MIN_LOADING_SCREEN_TIME ? MIN_LOADING_SCREEN_TIME - consumedTime : 0
+        );
+    };
+
     const fetchProfile = async newSession => {
         const { data, error } = await supabase
             .from("profiles")
@@ -199,13 +206,6 @@ export default function SupabaseProvider({ children }) {
         };
     };
 
-    const removeLoadingScreen = (consumedTime = 0) => {
-        setTimeout(
-            () => setShowLoadingScreen(false),
-            consumedTime < MIN_LOADING_SCREEN_TIME ? MIN_LOADING_SCREEN_TIME - consumedTime : 0
-        );
-    };
-
     useEffect(() => {
         const startTime = performance.now();
 
@@ -234,7 +234,6 @@ export default function SupabaseProvider({ children }) {
     return (
         <SupabaseContext.Provider
             value={{
-                supabase,
                 session,
                 profile,
                 showLoadingScreen,

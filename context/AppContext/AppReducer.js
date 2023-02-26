@@ -4,6 +4,12 @@ export default function AppReducer(state, action) {
     const { type, payload } = action;
 
     switch (type) {
+        case types.SET_ALERT:
+            return {
+                ...state,
+                alert: payload,
+            };
+
         case types.SET_CHATS:
             return {
                 ...state,
@@ -32,12 +38,6 @@ export default function AppReducer(state, action) {
             return {
                 ...state,
                 ...payload,
-            };
-
-        case types.SET_ALERT:
-            return {
-                ...state,
-                alert: payload,
             };
 
         default:
