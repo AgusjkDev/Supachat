@@ -5,6 +5,7 @@ import AppContext from "./AppContext";
 import AppReducer from "./AppReducer";
 import initialState from "./initialState";
 import types from "./types";
+import { ALERT_TIMEOUT } from "constants";
 
 export default function AppProvider({ children }) {
     const {
@@ -75,13 +76,15 @@ export default function AppProvider({ children }) {
 
         if (chatExists) {
             const updatedMessages = await sendMessageToChat(chat, message);
-            if (updatedMessages) setChatMessages(chat, updatedMessages);
+            if (!updatedMessages) return setAlert("¡Hubo un error al enviar el mensaje!");
+
+            setChatMessages(chat, updatedMessages);
 
             return;
         }
 
         const createdChat = await createChatAndSendMessage(chat.profile, message);
-        if (!createdChat) return;
+        if (!createdChat) return setAlert("¡Hubo un error al enviar el mensaje!");
 
         updateChats(createdChat);
     };
@@ -93,10 +96,21 @@ export default function AppProvider({ children }) {
         });
     };
 
+    const setAlert = alert => {
+        dispatch({
+            type: types.SET_ALERT,
+            payload: alert,
+        });
+    };
+
     useEffect(() => {
         if (!session || !profile) return;
 
-        getChats().then(setChats);
+        getChats().then(chats => {
+            if (!chats) setAlert("¡Hubo un error al obtener tus chats!");
+
+            setChats(chats ?? []);
+        });
     }, [session, profile]);
 
     useEffect(() => {
@@ -107,13 +121,22 @@ export default function AppProvider({ children }) {
 
         setIsLoadingMessages(true);
         getChatMessages(openedChat.chat_id, abortController.signal).then(chatMessages => {
-            if (chatMessages) setChatMessages(openedChat, chatMessages);
+            if (!chatMessages) setAlert("¡Hubo un error al obtener los mensajes!");
 
+            setChatMessages(openedChat, chatMessages ?? []);
             setIsLoadingMessages(false);
         });
 
         return () => abortController.abort();
     }, [state.openedChat]);
+
+    useEffect(() => {
+        if (!state.alert || !ALERT_TIMEOUT) return;
+
+        const timeoutId = setTimeout(() => setAlert(""), ALERT_TIMEOUT);
+
+        return () => clearTimeout(timeoutId);
+    }, [state.alert]);
 
     return (
         <AppContext.Provider
@@ -124,6 +147,7 @@ export default function AppProvider({ children }) {
                 setChatMessages,
                 sendMessage,
                 toggleShowOptions,
+                setAlert,
             }}
         >
             {children}

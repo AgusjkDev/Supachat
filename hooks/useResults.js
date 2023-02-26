@@ -1,10 +1,11 @@
 import { useContext, useState, useCallback, useEffect } from "react";
 import debounce from "just-debounce-it";
 
-import { SupabaseContext } from "context";
+import { SupabaseContext, AppContext } from "context";
 
 export default function useResults(query) {
     const { searchQuery } = useContext(SupabaseContext);
+    const { setAlert } = useContext(AppContext);
     const [searchedResults, setSearchedResults] = useState(null);
     const [results, setResults] = useState([]);
     const [searchedQuery, setSearchedQuery] = useState("");
@@ -18,6 +19,7 @@ export default function useResults(query) {
 
             searchQuery(q).then(data => {
                 if (data) setSearchedResults(data);
+                else setAlert("¡Hubo un error al buscar personas!");
 
                 setIsSearching(false);
             });

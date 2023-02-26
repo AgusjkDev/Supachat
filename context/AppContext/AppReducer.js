@@ -40,6 +40,12 @@ export default function AppReducer(state, action) {
                 showOptions: payload,
             };
 
+        case types.SET_ALERT:
+            return {
+                ...state,
+                alert: payload,
+            };
+
         default:
             return state;
     }

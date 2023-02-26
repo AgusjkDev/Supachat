@@ -4,7 +4,7 @@ import SupabaseContext from "./SupabaseContext";
 
 import supabase from "utils/supabase";
 import { groupMessages } from "helpers";
-import { MIN_LOADING_SCREEN_TIME } from "constants";
+import { IS_DEVELOPMENT_MODE, MIN_LOADING_SCREEN_TIME } from "constants";
 
 export default function SupabaseProvider({ children }) {
     const [session, setSession] = useState(null);
@@ -94,9 +94,9 @@ export default function SupabaseProvider({ children }) {
             .ilike("username", `${query}%`);
 
         if (error) {
-            console.error(error);
+            if (IS_DEVELOPMENT_MODE) console.error(error);
 
-            return null;
+            return;
         }
 
         return data;
@@ -109,9 +109,9 @@ export default function SupabaseProvider({ children }) {
             .eq("profile_id", profile.id);
 
         if (error) {
-            console.error(error);
+            if (IS_DEVELOPMENT_MODE) console.error(error);
 
-            return null;
+            return;
         }
 
         return data.map(({ chat_id }) => chat_id);
@@ -119,7 +119,7 @@ export default function SupabaseProvider({ children }) {
 
     const getChats = async () => {
         const chatsId = await getChatsId();
-        if (!chatsId) return null;
+        if (!chatsId) return;
         if (chatsId.length === 0) return [];
 
         const { data, error } = await supabase
@@ -140,9 +140,9 @@ export default function SupabaseProvider({ children }) {
             .neq("profile_id", profile.id);
 
         if (error) {
-            console.error(error);
+            if (IS_DEVELOPMENT_MODE) console.error(error);
 
-            return null;
+            return;
         }
 
         return data.map(({ chat_id, profiles }) => ({
@@ -159,9 +159,9 @@ export default function SupabaseProvider({ children }) {
             .abortSignal(signal);
 
         if (error) {
-            console.error(error);
+            if (IS_DEVELOPMENT_MODE) console.error(error);
 
-            return null;
+            return;
         }
 
         return groupMessages(
@@ -177,9 +177,9 @@ export default function SupabaseProvider({ children }) {
             .single();
 
         if (error) {
-            console.error(error);
+            if (IS_DEVELOPMENT_MODE) console.error(error);
 
-            return null;
+            return;
         }
 
         return groupMessages([
@@ -196,9 +196,9 @@ export default function SupabaseProvider({ children }) {
         });
 
         if (error) {
-            console.error(error);
+            if (IS_DEVELOPMENT_MODE) console.error(error);
 
-            return null;
+            return;
         }
 
         return {

@@ -5,6 +5,7 @@ const types = {
     UPDATE_CHAT_MESSAGES: "UPDATE_CHAT_MESSAGES",
     UPDATE_CHATS: "UPDATE_CHATS",
     SET_SHOW_OPTIONS: "SET_SHOW_OPTIONS",
+    SET_ALERT: "SET_ALERT",
 };
 
 export default types;

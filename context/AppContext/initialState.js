@@ -3,6 +3,7 @@ const initialState = {
     openedChat: null,
     isLoadingMessages: false,
     showOptions: false,
+    alert: "",
 };
 
 export default initialState;
