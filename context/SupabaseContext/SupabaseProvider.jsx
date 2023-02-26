@@ -20,7 +20,7 @@ export default function SupabaseProvider({ children }) {
 
         if (error) return { success: false, error };
 
-        setProfile(data);
+        setProfile({ ...data, created_at: new Date(data.created_at) });
 
         return { success: true };
     };
@@ -99,7 +99,7 @@ export default function SupabaseProvider({ children }) {
             return;
         }
 
-        return data;
+        return data.map(result => ({ ...result, created_at: new Date(result.created_at) }));
     };
 
     const getChats = async () => {
@@ -113,7 +113,10 @@ export default function SupabaseProvider({ children }) {
             return;
         }
 
-        return data;
+        return data.map(chat => ({
+            ...chat,
+            profile: { ...chat.profile, created_at: new Date(chat.profile.created_at) },
+        }));
     };
 
     const getChatMessages = async (chatId, signal) => {
