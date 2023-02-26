@@ -7,7 +7,7 @@ import { Spinner } from "components";
 import { useShownChats } from "hooks";
 
 export default function Chats() {
-    const { chats, setOpenedChat, setChatHidden } = useContext(AppContext);
+    const { chats, openedChat, setOpenedChat, setChatHidden } = useContext(AppContext);
     const { isLoading, shownChats } = useShownChats(chats);
 
     return (
@@ -27,11 +27,17 @@ export default function Chats() {
                     {shownChats.map(chat => {
                         const { chat_id, profile } = chat;
 
+                        const isActive = chat_id === openedChat?.chat_id;
+
                         return (
                             <div
                                 key={chat_id}
                                 role="button"
-                                className="group flex gap-2.5 border-b-[1px] border-background-700 p-3.5 transition-colors duration-300 last:border-none hover:bg-background-800"
+                                className={`group flex gap-2.5 border-b-[1px] border-background-700 p-3.5 last:border-none ${
+                                    isActive
+                                        ? "bg-background-800"
+                                        : "bg-background-900 transition-colors duration-300 hover:bg-background-800"
+                                }`}
                                 onClick={() => setOpenedChat(chat)}
                             >
                                 <ProfilePicture {...profile} />
