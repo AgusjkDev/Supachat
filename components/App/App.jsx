@@ -12,10 +12,18 @@ import Alert from "./Alert";
 import { useQuery, useResults } from "hooks";
 
 export default function App() {
-    const { profile } = useContext(SupabaseContext);
+    const { profile, logout } = useContext(SupabaseContext);
     const { openedChat, alert, setOpenedChat, setAlert } = useContext(AppContext);
     const { search, query, updateSearch } = useQuery();
     const { results, getResults } = useResults(query);
+
+    const options = [
+        {
+            key: "logout",
+            children: "Cerrar Sesión",
+            onClick: () => logout(),
+        },
+    ];
 
     return (
         <>
@@ -31,7 +39,7 @@ export default function App() {
                         <div className="flex justify-end gap-1.5">
                             <ThemeButton />
 
-                            <Options />
+                            <Options options={options} />
                         </div>
                     </header>
 

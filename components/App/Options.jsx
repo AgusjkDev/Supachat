@@ -1,18 +1,13 @@
-import { useContext } from "react";
+import { useState } from "react";
 
-import { SupabaseContext, AppContext } from "context";
 import SvgButton from "./SvgButton";
 import { Button } from "components";
 import { svgs } from "data";
 
-export default function Options() {
-    const { logout } = useContext(SupabaseContext);
-    const { showOptions, toggleShowOptions } = useContext(AppContext);
+export default function Options({ options }) {
+    const [showOptions, setShowOptions] = useState(false);
 
-    const handleLogout = () => {
-        logout();
-        toggleShowOptions();
-    };
+    const toggleShowOptions = () => setShowOptions(prevState => !prevState);
 
     return (
         <div className="relative">
@@ -25,7 +20,17 @@ export default function Options() {
 
             {showOptions && (
                 <div className="absolute top-10 right-1/4 z-[1] w-36 bg-background-800">
-                    <Button onClick={handleLogout}>Cerrar Sesión</Button>
+                    {options.map(({ key, children, onClick }) => (
+                        <Button
+                            key={key}
+                            onClick={() => {
+                                onClick();
+                                toggleShowOptions();
+                            }}
+                        >
+                            {children}
+                        </Button>
+                    ))}
                 </div>
             )}
         </div>

@@ -82,13 +82,6 @@ export default function AppProvider({ children }) {
         updateChats(createdChat);
     };
 
-    const toggleShowOptions = () => {
-        dispatch({
-            type: types.SET_SHOW_OPTIONS,
-            payload: !state.showOptions,
-        });
-    };
-
     const setAlert = alert => {
         dispatch({
             type: types.SET_ALERT,
@@ -138,7 +131,6 @@ export default function AppProvider({ children }) {
                 setOpenedChat,
                 setChatMessages,
                 sendMessage,
-                toggleShowOptions,
                 setAlert,
             }}
         >
