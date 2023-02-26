@@ -4,7 +4,7 @@ import SvgButton from "./SvgButton";
 import { Button } from "components";
 import { svgs } from "data";
 
-export default function Options({ options }) {
+export default function Options({ options, small = false }) {
     const [showOptions, setShowOptions] = useState(false);
 
     const toggleShowOptions = () => setShowOptions(prevState => !prevState);
@@ -16,6 +16,7 @@ export default function Options({ options }) {
                 title="Opciones"
                 onClick={toggleShowOptions}
                 svg={svgs.options}
+                small={small}
             />
 
             {showOptions && (

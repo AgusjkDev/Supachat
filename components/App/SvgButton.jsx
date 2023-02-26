@@ -1,16 +1,28 @@
-export default function SvgButton({ ariaLabel, title, type, className, onClick, svg }) {
+export default function SvgButton({
+    ariaLabel,
+    title,
+    type,
+    className,
+    onClick,
+    svg,
+    small = false,
+}) {
     return (
         <button
             aria-label={ariaLabel}
             title={title}
             {...(type && { type })}
-            className={`group grid h-8 w-8 place-items-center${className ? ` ${className}` : ""}`}
+            className={`group/svg grid place-items-center${className ? ` ${className}` : ""} ${
+                small ? "h-7 w-7" : "h-8 w-8"
+            }`}
             onClick={onClick}
         >
             <svg
                 xmlns="http://www.w3.org/2000/svg"
                 viewBox={svg.viewBox}
-                className="h-6 w-6 fill-secondary-dark transition-colors duration-300 group-hover:fill-primary"
+                className={`fill-secondary-dark transition-colors duration-300 group-hover/svg:fill-primary ${
+                    small ? "h-5 w-5" : "h-6 w-6"
+                }`}
             >
                 <path d={svg.path} />
             </svg>
