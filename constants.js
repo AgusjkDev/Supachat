@@ -1,1 +1,2 @@
-export const MIN_LOADING_SCREEN_TIME = process.env.NODE_ENV === "production" ? 1000 : 0;
+export const IS_DEVELOPMENT_MODE = process.env.NODE_ENV === "development";
+export const MIN_LOADING_SCREEN_TIME = IS_DEVELOPMENT_MODE ? 0 : 1000;
