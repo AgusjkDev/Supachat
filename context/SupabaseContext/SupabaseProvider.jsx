@@ -102,42 +102,10 @@ export default function SupabaseProvider({ children }) {
         return data;
     };
 
-    const getChatsId = async () => {
-        const { data, error } = await supabase
-            .from("chat_participants")
-            .select("chat_id")
-            .eq("profile_id", profile.id);
-
-        if (error) {
-            if (IS_DEVELOPMENT_MODE) console.error(error);
-
-            return;
-        }
-
-        return data.map(({ chat_id }) => chat_id);
-    };
-
     const getChats = async () => {
-        const chatsId = await getChatsId();
-        if (!chatsId) return;
-        if (chatsId.length === 0) return [];
-
-        const { data, error } = await supabase
-            .from("chat_participants")
-            .select(
-                `
-                chat_id,
-                profiles:profile_id(
-                    id,
-                    created_at,
-                    username,
-                    profile_picture,
-                    status
-                )
-            `
-            )
-            .in("chat_id", chatsId)
-            .neq("profile_id", profile.id);
+        const { data, error } = await supabase.rpc("get_profile_chats", {
+            p_id: profile.id,
+        });
 
         if (error) {
             if (IS_DEVELOPMENT_MODE) console.error(error);
@@ -145,10 +113,7 @@ export default function SupabaseProvider({ children }) {
             return;
         }
 
-        return data.map(({ chat_id, profiles }) => ({
-            chat_id,
-            profile: profiles,
-        }));
+        return data;
     };
 
     const getChatMessages = async (chatId, signal) => {
