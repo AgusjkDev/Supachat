@@ -1,14 +1,16 @@
 import { useContext } from "react";
 
 import { SupabaseContext, AppContext } from "context";
-import ProfilePicture from "./ProfilePicture";
-import ThemeButton from "./ThemeButton";
-import Options from "./Options";
-import Search from "./Search";
-import Results from "./Results";
-import Chats from "./Chats";
-import Chat from "./Chat";
-import Alert from "./Alert";
+import {
+    ProfilePicture,
+    ThemeButton,
+    Options,
+    Search,
+    Results,
+    Chats,
+    Chat,
+    Alert,
+} from "components/App";
 import { useQuery, useResults } from "hooks";
 
 export default function App() {

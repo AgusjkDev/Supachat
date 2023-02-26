@@ -1,8 +1,7 @@
 import { useContext, useState, useRef, useEffect } from "react";
 
 import { SupabaseContext, AppContext } from "context";
-import SvgButton from "./SvgButton";
-import ProfilePicture from "./ProfilePicture";
+import { SvgButton, ProfilePicture } from "components/App";
 import { Spinner } from "components";
 import { svgs } from "data";
 import { formatDate } from "helpers";
@@ -17,13 +16,13 @@ export default function Chat({ openedChat, exitOpenedChat }) {
     const { profile: chatterProfile, messages } = openedChat;
     const { username, status } = chatterProfile;
 
-    const handleMessageSubmit = async e => {
+    const handleMessageSubmit = e => {
         e.preventDefault();
 
         const cleanMessage = message.trim();
         if (!cleanMessage) return;
 
-        await sendMessage(openedChat, cleanMessage);
+        sendMessage(openedChat, cleanMessage);
         setMessage("");
     };
 

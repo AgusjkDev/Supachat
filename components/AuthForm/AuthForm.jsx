@@ -1,8 +1,7 @@
 import { useContext, useState, useEffect } from "react";
 
 import { SupabaseContext } from "context";
-import FormButton from "./FormButton";
-import FormField from "./FormField";
+import { FormButton, FormField } from "components/AuthForm";
 import { Spinner, Button } from "components";
 import { authForms, regex } from "data";
 import { reduceSpaces } from "helpers";

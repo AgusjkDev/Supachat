@@ -1,4 +1,4 @@
-import SvgButton from "./SvgButton";
+import { SvgButton } from "components/App";
 import { svgs } from "data";
 
 export default function Search({ search, updateSearch, getResults }) {

@@ -1,7 +1,7 @@
 import { useContext } from "react";
 
 import { AppContext } from "context";
-import ProfilePicture from "./ProfilePicture";
+import { ProfilePicture } from "components/App";
 
 export default function Results({ results, clearResults }) {
     const { chats, setOpenedChat } = useContext(AppContext);

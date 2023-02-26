@@ -1,6 +1,6 @@
 import { useState } from "react";
 
-import SvgButton from "./SvgButton";
+import { SvgButton } from "components/App";
 import { Button } from "components";
 import { svgs } from "data";
 

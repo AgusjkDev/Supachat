@@ -1,8 +1,7 @@
 import { useContext } from "react";
 
 import { AppContext } from "context";
-import ProfilePicture from "./ProfilePicture";
-import Options from "./Options";
+import { ProfilePicture, Options } from "components/App";
 import { Spinner } from "components";
 import { useShownChats } from "hooks";
 
