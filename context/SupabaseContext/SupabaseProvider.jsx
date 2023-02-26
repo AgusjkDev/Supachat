@@ -119,6 +119,23 @@ export default function SupabaseProvider({ children }) {
         }));
     };
 
+    const hideChat = async chat => {
+        const { error } = await supabase
+            .from("chat_participants")
+            .update({ is_hidden: true })
+            .match({ profile_id: profile.id, chat_id: chat.chat_id })
+            .select()
+            .single();
+
+        if (error) {
+            if (IS_DEVELOPMENT_MODE) console.error(error);
+
+            return;
+        }
+
+        return { ...chat, is_hidden: true };
+    };
+
     const getChatMessages = async (chatId, signal) => {
         const { data, error } = await supabase
             .from("messages")
@@ -226,6 +243,7 @@ export default function SupabaseProvider({ children }) {
                 logout,
                 searchQuery,
                 getChats,
+                hideChat,
                 getChatMessages,
                 sendMessageToChat,
                 createChatAndSendMessage,

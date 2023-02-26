@@ -4,28 +4,27 @@ import { AppContext } from "context";
 import ProfilePicture from "./ProfilePicture";
 import Options from "./Options";
 import { Spinner } from "components";
+import { useShownChats } from "hooks";
 
 export default function Chats() {
-    const { chats, setOpenedChat } = useContext(AppContext);
-
-    const isLoading = !chats;
-    const noChats = chats?.length === 0;
+    const { chats, setOpenedChat, setChatHidden } = useContext(AppContext);
+    const { isLoading, shownChats } = useShownChats(chats);
 
     return (
         <div
-            {...((isLoading || noChats) && {
+            {...((isLoading || !shownChats) && {
                 className: "flex h-full items-center justify-center",
             })}
         >
             {isLoading ? (
                 <Spinner />
-            ) : noChats ? (
+            ) : !shownChats ? (
                 <span className="text-center text-xl font-bold text-primary">
                     ¡No tienes chats!
                 </span>
             ) : (
                 <>
-                    {chats.map(chat => {
+                    {shownChats.map(chat => {
                         const { chat_id, profile } = chat;
 
                         return (
@@ -50,7 +49,16 @@ export default function Chats() {
                                         <span className="text-xs text-secondary-dark">&nbsp;</span>
 
                                         <div className="opacity-0 transition-opacity duration-300 group-hover:opacity-100">
-                                            <Options options={[]} small />
+                                            <Options
+                                                options={[
+                                                    {
+                                                        key: "hide",
+                                                        children: "Ocultar Chat",
+                                                        onClick: () => setChatHidden(chat),
+                                                    },
+                                                ]}
+                                                small
+                                            />
                                         </div>
                                     </div>
                                 </div>

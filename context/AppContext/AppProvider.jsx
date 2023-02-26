@@ -12,6 +12,7 @@ export default function AppProvider({ children }) {
         session,
         profile,
         getChats,
+        hideChat,
         getChatMessages,
         sendMessageToChat,
         createChatAndSendMessage,
@@ -29,6 +30,18 @@ export default function AppProvider({ children }) {
         dispatch({
             type: types.SET_OPENED_CHAT,
             payload: chat,
+        });
+    };
+
+    const setChatHidden = async chat => {
+        const hiddenChat = await hideChat(chat);
+        if (!hiddenChat) return setAlert("¡Hubo un error al ocultar el chat!");
+
+        dispatch({
+            type: types.SET_CHATS,
+            payload: state.chats.map(stateChat =>
+                stateChat.chat_id === hiddenChat.chat_id ? hiddenChat : stateChat
+            ),
         });
     };
 
@@ -129,6 +142,7 @@ export default function AppProvider({ children }) {
             value={{
                 ...state,
                 setOpenedChat,
+                setChatHidden,
                 setChatMessages,
                 sendMessage,
                 setAlert,

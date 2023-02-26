@@ -26,11 +26,13 @@ $$ LANGUAGE plpgsql;
 
 CREATE OR REPLACE FUNCTION get_profile_chats(p_id uuid) RETURNS TABLE (
     chat_id uuid,
+    is_hidden boolean,
     profile profiles
 ) AS $$
 BEGIN
   RETURN QUERY SELECT
         c.id AS chat_id,
+        cp.is_hidden AS is_hidden,
         p2
     FROM
         chat_participants cp
