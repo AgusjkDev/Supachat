@@ -28,7 +28,8 @@ export default function Options({ options, small = false }) {
                     {options.map(({ key, children, onClick }) => (
                         <Button
                             key={key}
-                            onClick={() => {
+                            onClick={e => {
+                                e.stopPropagation();
                                 onClick();
                                 toggleShowOptions();
                             }}
