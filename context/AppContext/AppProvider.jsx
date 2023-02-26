@@ -40,37 +40,37 @@ export default function AppProvider({ children }) {
         });
     };
 
+    const updateChats = (chat, isMessagesUpdate = false) => {
+        const { chats, openedChat } = state;
+        const { chat_id } = chat;
+
+        const alreadyExists = chats.some(stateChat => stateChat.chat_id === chat_id);
+        const isOpenedChat = openedChat && (openedChat.chat_id === chat_id || !openedChat.chat_id);
+
+        dispatch({
+            type: types.UPDATE_CHATS,
+            payload: {
+                chats: alreadyExists
+                    ? isMessagesUpdate
+                        ? chats.map(stateChat => (stateChat.chat_id === chat_id ? chat : stateChat))
+                        : [chat, ...chats.filter(stateChat => stateChat.chat_id !== chat_id)]
+                    : [chat, ...chats],
+                ...(isOpenedChat && { openedChat: !chat.is_hidden ? chat : null }),
+            },
+        });
+    };
+
     const setChatHidden = async chat => {
         const hiddenChat = await hideChat(chat);
         if (!hiddenChat) return setAlert("¡Hubo un error al ocultar el chat!");
 
-        dispatch({
-            type: types.SET_CHATS,
-            payload: state.chats.map(stateChat =>
-                stateChat.chat_id === hiddenChat.chat_id ? hiddenChat : stateChat
-            ),
-        });
+        updateChats(hiddenChat);
     };
 
     const setIsLoadingMessages = newValue => {
         dispatch({
             type: types.SET_IS_LOADING_MESSAGES,
             payload: newValue,
-        });
-    };
-
-    const setChatMessages = (openedChat, chatMessages) => {
-        const updatedOpenedChat = { ...openedChat, messages: chatMessages };
-        const updatedChats = state.chats.map(chat =>
-            chat.chat_id === openedChat.chat_id ? updatedOpenedChat : chat
-        );
-
-        dispatch({
-            type: types.UPDATE_CHAT_MESSAGES,
-            payload: {
-                openedChat: updatedOpenedChat,
-                chats: updatedChats,
-            },
         });
     };
 
@@ -81,7 +81,7 @@ export default function AppProvider({ children }) {
             const updatedMessages = await sendMessageToChat(chat, message);
             if (!updatedMessages) return setAlert("¡Hubo un error al enviar el mensaje!");
 
-            setChatMessages(chat, updatedMessages);
+            updateChats({ ...chat, messages: updatedMessages });
 
             return;
         }
@@ -89,13 +89,7 @@ export default function AppProvider({ children }) {
         const createdChat = await createChatAndSendMessage(chat.profile, message);
         if (!createdChat) return setAlert("¡Hubo un error al enviar el mensaje!");
 
-        dispatch({
-            type: types.UPDATE_CHATS,
-            payload: {
-                openedChat: createdChat,
-                chats: [createdChat, ...state.chats],
-            },
-        });
+        updateChats(createdChat);
     };
 
     useEffect(() => {
@@ -126,7 +120,7 @@ export default function AppProvider({ children }) {
         getChatMessages(openedChat.chat_id, abortController.signal).then(chatMessages => {
             if (!chatMessages) setAlert("¡Hubo un error al obtener los mensajes!");
 
-            setChatMessages(openedChat, chatMessages ?? []);
+            updateChats({ ...openedChat, messages: chatMessages ?? [] }, true);
             setIsLoadingMessages(false);
         });
 
@@ -140,7 +134,6 @@ export default function AppProvider({ children }) {
                 setAlert,
                 setOpenedChat,
                 setChatHidden,
-                setChatMessages,
                 sendMessage,
             }}
         >

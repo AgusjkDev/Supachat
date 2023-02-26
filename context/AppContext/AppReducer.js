@@ -22,22 +22,16 @@ export default function AppReducer(state, action) {
                 openedChat: payload,
             };
 
-        case types.SET_IS_LOADING_MESSAGES:
-            return {
-                ...state,
-                isLoadingMessages: payload,
-            };
-
-        case types.UPDATE_CHAT_MESSAGES:
-            return {
-                ...state,
-                ...payload,
-            };
-
         case types.UPDATE_CHATS:
             return {
                 ...state,
                 ...payload,
+            };
+
+        case types.SET_IS_LOADING_MESSAGES:
+            return {
+                ...state,
+                isLoadingMessages: payload,
             };
 
         default:
