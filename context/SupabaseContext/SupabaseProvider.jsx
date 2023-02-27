@@ -120,17 +120,18 @@ export default function SupabaseProvider({ children }) {
             return;
         }
 
-        return data.map(chat => ({
+        return data.map(({ chat, profile }) => ({
             ...chat,
-            profile: { ...chat.profile, created_at: new Date(chat.profile.created_at) },
+            created_at: new Date(chat.created_at),
+            profile: { ...profile, created_at: new Date(profile.created_at) },
         }));
     };
 
     const hideChat = async chat => {
-        const { error } = await supabase
-            .from("chat_participants")
+        const { data, error } = await supabase
+            .from("chats")
             .update({ is_hidden: true })
-            .match({ profile_id: profile.id, chat_id: chat.chat_id })
+            .match({ chatroom_id: chat.chatroom_id, profile_id: profile.id })
             .select()
             .single();
 
@@ -140,14 +141,14 @@ export default function SupabaseProvider({ children }) {
             return;
         }
 
-        return { ...chat, is_hidden: true };
+        return { ...chat, ...data, created_at: new Date(data.created_at) };
     };
 
-    const getChatMessages = async (chatId, signal) => {
+    const getChatMessages = async (chat, signal) => {
         const { data, error } = await supabase
             .from("messages")
             .select()
-            .eq("chat_id", chatId)
+            .eq("chatroom_id", chat.chatroom_id)
             .abortSignal(signal);
 
         if (error) {
@@ -163,9 +164,12 @@ export default function SupabaseProvider({ children }) {
 
     const sendMessageToChat = async (chat, message) => {
         const { data, error } = await supabase
-            .from("messages")
-            .insert({ content: message, profile_id: profile.id, chat_id: chat.chat_id })
-            .select()
+            .rpc("send_message_to_chat", {
+                sender_profile_id: profile.id,
+                receiver_profile_id: chat.profile.id,
+                chat,
+                message,
+            })
             .single();
 
         if (error) {
@@ -174,34 +178,15 @@ export default function SupabaseProvider({ children }) {
             return;
         }
 
-        return groupMessages([
-            ...chat.messages.flatMap(msg => msg),
-            { ...data, created_at: new Date(data.created_at) },
-        ]);
-    };
-
-    const createChatAndSendMessage = async (chatterProfile, message) => {
-        const { data, error } = await supabase.rpc("create_chat_and_send_message", {
-            profile_id: profile.id,
-            chatter_profile_id: chatterProfile.id,
-            message,
-        });
-
-        if (error) {
-            if (IS_DEVELOPMENT_MODE) console.error(error);
-
-            return;
-        }
+        const { created_chat, inserted_message } = data;
 
         return {
-            chat_id: data.chat_id,
-            profile: chatterProfile,
+            ...chat,
+            ...created_chat,
+            created_at: new Date(created_chat.created_at),
             messages: groupMessages([
-                {
-                    ...data,
-                    created_at: new Date(data.created_at),
-                    profile_id: profile.id,
-                },
+                ...chat.messages.flatMap(msg => msg),
+                { ...inserted_message, created_at: new Date(inserted_message.created_at) },
             ]),
         };
     };
@@ -245,7 +230,6 @@ export default function SupabaseProvider({ children }) {
                 hideChat,
                 getChatMessages,
                 sendMessageToChat,
-                createChatAndSendMessage,
             }}
         >
             {children}

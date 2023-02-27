@@ -1,47 +1,67 @@
-CREATE OR REPLACE FUNCTION create_chat_and_send_message(
-    profile_id uuid, 
-    chatter_profile_id uuid, 
-    message text
-) 
-RETURNS messages
+CREATE OR REPLACE FUNCTION get_profile_chats(p_id uuid)
+RETURNS TABLE (
+    chat chats,
+    profile profiles
+)
 AS $$
-DECLARE
-	chat chats;
-	inserted_message messages;
 BEGIN
-    INSERT INTO chats (id)
-    VALUES (uuid_generate_v4())
-    RETURNING * INTO chat;
-
-    INSERT INTO chat_participants (profile_id, chat_id)
-    VALUES (profile_id, chat.id), (chatter_profile_id, chat.id);
-
-    INSERT INTO messages (content, profile_id, chat_id)
-    VALUES (message, profile_id, chat.id)
-    RETURNING * INTO inserted_message;
-
-    RETURN inserted_message;
+    RETURN QUERY SELECT c, p2
+    FROM
+        chats c
+        JOIN chatrooms cr ON cr.id = c.chatroom_id
+        JOIN profiles p ON p.id = c.profile_id
+        JOIN chats c2 ON c2.chatroom_id = cr.id
+        JOIN profiles p2 ON p2.id = c2.profile_id
+    WHERE
+        c.profile_id = p_id
+        AND p2.id <> p_id;
 END;
 $$ LANGUAGE plpgsql;
 
-CREATE OR REPLACE FUNCTION get_profile_chats(p_id uuid) RETURNS TABLE (
-    chat_id uuid,
-    is_hidden boolean,
-    profile profiles
-) AS $$
+CREATE OR REPLACE FUNCTION send_message_to_chat(
+    sender_profile_id uuid,
+    receiver_profile_id uuid,
+    chat chats,
+    message text
+)
+RETURNS TABLE (
+    created_chat chats,
+    inserted_message messages
+)
+AS $$
+DECLARE
+    created_chatroom_id uuid;
 BEGIN
-  RETURN QUERY SELECT
-        c.id AS chat_id,
-        cp.is_hidden AS is_hidden,
-        p2
-    FROM
-        chat_participants cp
-        JOIN chats c ON c.id = cp.chat_id
-        JOIN profiles p ON p.id = cp.profile_id
-        JOIN chat_participants cp2 ON cp2.chat_id = c.id
-        JOIN profiles p2 ON p2.id = cp2.profile_id
-    WHERE
-        cp.profile_id = p_id
-        AND p2.id <> p_id;
+    IF chat.id IS NULL THEN
+        INSERT INTO chatrooms (id)
+        VALUES (uuid_generate_v4())
+        RETURNING id INTO created_chatroom_id;
+
+        INSERT INTO chats (chatroom_id, profile_id)
+        VALUES (created_chatroom_id, sender_profile_id)
+        RETURNING * INTO created_chat;
+
+        INSERT INTO chats (chatroom_id, profile_id)
+        VALUES (created_chatroom_id, receiver_profile_id);
+
+        INSERT INTO messages (chatroom_id, profile_id, content)
+        VALUES (created_chatroom_id, sender_profile_id, message)
+        RETURNING * INTO inserted_message;
+
+        RETURN QUERY SELECT created_chat, inserted_message;
+    ELSE
+        INSERT INTO messages (chatroom_id, profile_id, content)
+        VALUES (chat.chatroom_id, sender_profile_id, message)
+        RETURNING * INTO inserted_message;
+
+        IF chat.is_hidden IS true THEN
+            UPDATE chats SET is_hidden = false
+            WHERE profile_id = sender_profile_id
+            AND chatroom_id = chat.chatroom_id
+            RETURNING * INTO chat;
+        END IF;
+
+        RETURN QUERY SELECT chat, inserted_message;
+    END IF;
 END;
 $$ LANGUAGE plpgsql;

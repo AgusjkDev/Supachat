@@ -24,13 +24,13 @@ export default function Chats() {
             ) : (
                 <>
                     {shownChats.map(chat => {
-                        const { chat_id, profile } = chat;
+                        const { id, profile } = chat;
 
-                        const isActive = chat_id === openedChat?.chat_id;
+                        const isActive = id === openedChat?.id;
 
                         return (
                             <div
-                                key={chat_id}
+                                key={id}
                                 role="button"
                                 className={`group flex gap-2.5 border-b-[1px] border-background-700 p-3.5 last:border-none ${
                                     isActive

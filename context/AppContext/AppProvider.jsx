@@ -8,15 +8,8 @@ import types from "./types";
 import { ALERT_TIMEOUT } from "constants";
 
 export default function AppProvider({ children }) {
-    const {
-        session,
-        profile,
-        getChats,
-        hideChat,
-        getChatMessages,
-        sendMessageToChat,
-        createChatAndSendMessage,
-    } = useContext(SupabaseContext);
+    const { session, profile, getChats, hideChat, getChatMessages, sendMessageToChat } =
+        useContext(SupabaseContext);
     const [state, dispatch] = useReducer(AppReducer, initialState);
 
     const setAlert = alert => {
@@ -42,20 +35,22 @@ export default function AppProvider({ children }) {
 
     const updateChats = (chat, isMessagesUpdate = false) => {
         const { chats, openedChat } = state;
-        const { chat_id } = chat;
+        const { id } = chat;
 
-        const alreadyExists = chats.some(stateChat => stateChat.chat_id === chat_id);
-        const isOpenedChat = openedChat && (openedChat.chat_id === chat_id || !openedChat.chat_id);
+        const alreadyExists = chats.some(stateChat => stateChat.id === id);
+        const isOpenedChat = openedChat && (openedChat.id === id || !openedChat.id);
 
         dispatch({
             type: types.UPDATE_CHATS,
             payload: {
                 chats: alreadyExists
                     ? isMessagesUpdate
-                        ? chats.map(stateChat => (stateChat.chat_id === chat_id ? chat : stateChat))
-                        : [chat, ...chats.filter(stateChat => stateChat.chat_id !== chat_id)]
+                        ? chats.map(stateChat => (stateChat.id === id ? chat : stateChat))
+                        : [chat, ...chats.filter(stateChat => stateChat.id !== id)]
                     : [chat, ...chats],
-                ...(isOpenedChat && { openedChat: !chat.is_hidden ? chat : null }),
+                ...(isOpenedChat && {
+                    openedChat: chat.is_hidden && !isMessagesUpdate ? null : chat,
+                }),
             },
         });
     };
@@ -75,21 +70,10 @@ export default function AppProvider({ children }) {
     };
 
     const sendMessage = async (chat, message) => {
-        const chatExists = Boolean(chat.chat_id);
+        const updatedChat = await sendMessageToChat(chat, message);
+        if (!updatedChat) return setAlert("¡Hubo un error al enviar el mensaje!");
 
-        if (chatExists) {
-            const updatedMessages = await sendMessageToChat(chat, message);
-            if (!updatedMessages) return setAlert("¡Hubo un error al enviar el mensaje!");
-
-            updateChats({ ...chat, messages: updatedMessages });
-
-            return;
-        }
-
-        const createdChat = await createChatAndSendMessage(chat.profile, message);
-        if (!createdChat) return setAlert("¡Hubo un error al enviar el mensaje!");
-
-        updateChats(createdChat);
+        updateChats(updatedChat);
     };
 
     useEffect(() => {
@@ -117,7 +101,7 @@ export default function AppProvider({ children }) {
         const abortController = new AbortController();
 
         setIsLoadingMessages(true);
-        getChatMessages(openedChat.chat_id, abortController.signal).then(chatMessages => {
+        getChatMessages(openedChat, abortController.signal).then(chatMessages => {
             if (!chatMessages) setAlert("¡Hubo un error al obtener los mensajes!");
 
             updateChats({ ...openedChat, messages: chatMessages ?? [] }, true);
