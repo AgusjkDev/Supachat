@@ -79,7 +79,7 @@ export default function Chat({ openedChat, exitOpenedChat }) {
                 />
             </header>
 
-            <div className="scrollbar max-h-[calc(100vh-73px-71px)] overflow-y-auto lg:max-h-[calc(100vh-65px-63px)]">
+            <div className="scrollbar max-h-[calc(100vh-73px-71px)] [overflow-y:overlay] lg:max-h-[calc(100vh-65px-63px)]">
                 <div
                     className={`min-h-[calc(100vh-73px-71px)] lg:min-h-[calc(100vh-65px-63px)] ${
                         messages
