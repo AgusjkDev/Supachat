@@ -53,7 +53,7 @@ export default function Chats() {
                                     <div className="flex flex-col justify-evenly">
                                         <span className="text-xs text-secondary-dark">&nbsp;</span>
 
-                                        <div className="opacity-0 transition-opacity duration-300 group-hover:opacity-100">
+                                        <div className="lg:opacity-0 lg:transition-opacity lg:duration-300 lg:group-hover:opacity-100">
                                             <Options
                                                 options={[
                                                     {
