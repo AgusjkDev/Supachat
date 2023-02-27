@@ -1,6 +1,9 @@
-import { regex } from "data";
+import { regex, diacriticChars } from "data";
 
 export const reduceSpaces = str => str.replace(regex.removeExtraSpaces, " ").trim();
+
+export const sanitizeQuery = str =>
+    str.replace(regex.sanitizeQuery, c => diacriticChars[c] || "").trim();
 
 export const formatDate = (date, format) => {
     const hourFormat = {
