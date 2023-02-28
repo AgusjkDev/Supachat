@@ -1,4 +1,4 @@
-export default function FormButton({ form, activeForm, isSubmitting, setActiveForm, children }) {
+export default function FormButton({ form, activeForm, isSubmitting, updateActiveForm, children }) {
     const isActive = form == activeForm;
 
     return (
@@ -13,7 +13,7 @@ export default function FormButton({ form, activeForm, isSubmitting, setActiveFo
                               : ""
                       }${isSubmitting ? " hover:cursor-not-allowed" : ""}`
             }`}
-            onClick={() => setActiveForm(form)}
+            onClick={() => updateActiveForm(form)}
         >
             {children}
         </button>

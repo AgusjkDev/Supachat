@@ -1,76 +1,18 @@
-import { useContext, useState, useEffect } from "react";
-
-import { SupabaseContext } from "context";
 import { FormButton, FormField } from "components/AuthForm";
 import { Spinner, Button } from "components";
-import { authForms, regex } from "data";
-import { reduceSpaces } from "helpers";
+import { useAuthForm } from "hooks";
+import { authForms } from "data";
 
 export default function AuthForm() {
-    const { login, signUp } = useContext(SupabaseContext);
-    const [activeForm, setActiveForm] = useState("login");
-    const [isSubmitting, setIsSubmitting] = useState(false);
-    const [errorMessage, setErrorMessage] = useState("");
-
-    const isSignupForm = activeForm === "signup";
-
-    const handleSubmit = async e => {
-        e.preventDefault();
-        setIsSubmitting(true);
-
-        if (errorMessage) setErrorMessage("");
-
-        const fields = Object.fromEntries(new FormData(e.target));
-        if (Object.values(fields).some(field => !field)) {
-            return setErrorMessage("¡Todos los campos son obligatorios!");
-        }
-
-        const { username, email, password, confirmPassword } = fields;
-
-        const cleanUsername = isSignupForm ? reduceSpaces(username) : undefined;
-        if (isSignupForm && !regex.username.test(cleanUsername)) {
-            return setErrorMessage(
-                "¡El nombre de usuario debe tener al menos 3 carácteres, solo letras, números, puntos y guión bajo!"
-            );
-        }
-
-        const cleanEmail = reduceSpaces(email);
-        if (!regex.email.test(cleanEmail)) {
-            return setErrorMessage("¡Dirección de email inválida!");
-        }
-
-        if (!regex.password.test(password)) {
-            return setErrorMessage(
-                "¡La contraseña debe tener al menos 8 carácteres, una minúscula, una mayúscula, un número y un símbolo!"
-            );
-        }
-
-        if (isSignupForm && password !== confirmPassword) {
-            return setErrorMessage("¡Las contraseñas no coinciden!");
-        }
-
-        const authFunction = isSignupForm ? signUp : login;
-
-        const { error } = await authFunction(
-            ...(isSignupForm ? [cleanUsername, cleanEmail, password] : [cleanEmail, password])
-        );
-
-        if (error) return setErrorMessage(error);
-
-        setIsSubmitting(false);
-    };
-
-    useEffect(() => {
-        if (!errorMessage) return;
-
-        setErrorMessage("");
-    }, [activeForm]);
-
-    useEffect(() => {
-        if (!errorMessage) return;
-
-        setIsSubmitting(false);
-    }, [errorMessage]);
+    const {
+        activeForm,
+        isSubmitting,
+        isSignupForm,
+        errorMessage,
+        formRef,
+        updateActiveForm,
+        handleSubmit,
+    } = useAuthForm();
 
     return (
         <div className="grid min-h-screen w-full place-items-center py-8">
@@ -84,7 +26,7 @@ export default function AuthForm() {
                         form="login"
                         activeForm={activeForm}
                         isSubmitting={isSubmitting}
-                        setActiveForm={setActiveForm}
+                        updateActiveForm={updateActiveForm}
                     >
                         Iniciar Sesión
                     </FormButton>
@@ -93,13 +35,14 @@ export default function AuthForm() {
                         form="signup"
                         activeForm={activeForm}
                         isSubmitting={isSubmitting}
-                        setActiveForm={setActiveForm}
+                        updateActiveForm={updateActiveForm}
                     >
                         Registrarse
                     </FormButton>
                 </div>
 
                 <form
+                    ref={formRef}
                     autoComplete="off"
                     className="flex w-full flex-col gap-5"
                     onSubmit={handleSubmit}
