@@ -7,7 +7,7 @@ export default function useResults(query) {
     const { searchQuery } = useContext(SupabaseContext);
     const { setAlert } = useContext(AppContext);
     const [searchedResults, setSearchedResults] = useState(null);
-    const [results, setResults] = useState([]);
+    const [results, setResults] = useState(null);
     const [searchedQuery, setSearchedQuery] = useState("");
     const [storedResults, setStoredResults] = useState({});
     const [isSearching, setIsSearching] = useState(false);
@@ -29,7 +29,7 @@ export default function useResults(query) {
 
     useEffect(() => {
         if (!query) {
-            if (results.length > 0) setResults([]);
+            if (results) setResults(null);
 
             return;
         }
