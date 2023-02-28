@@ -181,14 +181,17 @@ export default function SupabaseProvider({ children }) {
 
         const { created_chat, inserted_message } = data;
 
+        const last_message = {
+            ...inserted_message,
+            created_at: new Date(inserted_message.created_at),
+        };
+
         return {
             ...chat,
             ...created_chat,
             created_at: new Date(created_chat.created_at),
-            messages: groupMessages([
-                ...chat.messages.flatMap(msg => msg),
-                { ...inserted_message, created_at: new Date(inserted_message.created_at) },
-            ]),
+            last_message,
+            messages: groupMessages([...chat.messages.flatMap(msg => msg), last_message]),
         };
     };
 
