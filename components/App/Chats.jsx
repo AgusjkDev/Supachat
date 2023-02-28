@@ -18,7 +18,7 @@ export default function Chats() {
             {isLoading ? (
                 <Spinner />
             ) : !shownChats ? (
-                <span className="text-center text-xl font-bold text-primary">
+                <span className="text-center text-lg font-bold text-primary">
                     ¡No tienes chats!
                 </span>
             ) : (
