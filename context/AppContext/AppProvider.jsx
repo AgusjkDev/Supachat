@@ -8,8 +8,17 @@ import types from "./types";
 import { ALERT_TIMEOUT } from "constants";
 
 export default function AppProvider({ children }) {
-    const { session, profile, getChats, hideChat, getChatMessages, sendMessageToChat } =
-        useContext(SupabaseContext);
+    const {
+        session,
+        profile,
+        getChats,
+        hideChat,
+        getChatMessages,
+        sendMessageToChat,
+        getChatroomInfo,
+        realtimeSubscription,
+        removeSubscription,
+    } = useContext(SupabaseContext);
     const [state, dispatch] = useReducer(AppReducer, initialState);
 
     const reset = () => {
@@ -79,6 +88,8 @@ export default function AppProvider({ children }) {
         const updatedChat = await sendMessageToChat(chat, message);
         if (!updatedChat) return setAlert("¡Hubo un error al enviar el mensaje!");
 
+        if (!chat.id) return;
+
         updateChats(updatedChat);
     };
 
@@ -116,6 +127,33 @@ export default function AppProvider({ children }) {
 
         return () => abortController.abort();
     }, [state.openedChat]);
+
+    useEffect(() => {
+        const { chats } = state;
+        if (!chats) return;
+
+        const subscription = realtimeSubscription(
+            "INSERT",
+            "chats",
+            `profile_id=eq.${profile.id}`,
+            async ({ new: chat }) => {
+                const chatroomInfo = await getChatroomInfo(chat.chatroom_id);
+                if (!chatroomInfo) return;
+
+                const updatedChat = {
+                    ...chat,
+                    created_at: new Date(chat.created_at),
+                    ...chatroomInfo,
+                };
+
+                updateChats(updatedChat);
+            }
+        );
+
+        return () => {
+            removeSubscription(subscription);
+        };
+    }, [state.chats, state.openedChat]);
 
     return (
         <AppContext.Provider

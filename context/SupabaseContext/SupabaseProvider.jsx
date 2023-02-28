@@ -195,6 +195,51 @@ export default function SupabaseProvider({ children }) {
         };
     };
 
+    const getChatroomInfo = async chatroomId => {
+        const { data, error } = await supabase
+            .rpc("get_chatroom_info", {
+                p_id: profile.id,
+                cr_id: chatroomId,
+            })
+            .single();
+
+        if (error) {
+            if (IS_DEVELOPMENT_MODE) console.error(error);
+
+            return;
+        }
+
+        const { messages, profile: senderProfile } = data;
+
+        const message = { ...messages, created_at: new Date(messages.created_at) };
+
+        return {
+            messages: groupMessages([message]),
+            last_message: message,
+            profile: { ...senderProfile, created_at: new Date(senderProfile.created_at) },
+        };
+    };
+
+    const realtimeSubscription = (event, table, filter = null, trigger) => {
+        const channel = supabase
+            .channel(`${event}-on-${table}`.toLowerCase())
+            .on(
+                "postgres_changes",
+                {
+                    schema: "public",
+                    event,
+                    table,
+                    ...(filter && { filter }),
+                },
+                payload => trigger(payload)
+            )
+            .subscribe();
+
+        return channel;
+    };
+
+    const removeSubscription = subscription => supabase.removeChannel(subscription);
+
     useEffect(() => {
         const startTime = performance.now();
 
@@ -234,6 +279,9 @@ export default function SupabaseProvider({ children }) {
                 hideChat,
                 getChatMessages,
                 sendMessageToChat,
+                getChatroomInfo,
+                realtimeSubscription,
+                removeSubscription,
             }}
         >
             {children}

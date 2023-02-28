@@ -82,3 +82,23 @@ CREATE TRIGGER update_last_message
 AFTER INSERT ON messages
 FOR EACH ROW
 EXECUTE FUNCTION update_last_message();
+
+CREATE OR REPLACE FUNCTION get_chatroom_info(
+  p_id uuid, 
+  cr_id uuid
+) RETURNS TABLE (
+  profile profiles,
+  messages messages
+)
+AS $$
+BEGIN
+    RETURN QUERY SELECT p, m
+    FROM
+        chats c
+        JOIN profiles p ON p.id = c.profile_id
+        JOIN messages m ON m.chatroom_id = c.chatroom_id
+    WHERE
+        c.chatroom_id = cr_id
+        AND p.id <> p_id;
+END;
+$$ LANGUAGE plpgsql;
