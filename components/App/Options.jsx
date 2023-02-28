@@ -27,7 +27,13 @@ export default function Options({ options, hiddenUntilHover = false, small = fal
                     }`}
                 >
                     {options.map(({ key, children, onClick }) => (
-                        <Button key={key} onClick={onClick}>
+                        <Button
+                            key={key}
+                            onClick={e => {
+                                e.stopPropagation();
+                                onClick();
+                            }}
+                        >
                             {children}
                         </Button>
                     ))}
