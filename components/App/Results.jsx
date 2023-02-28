@@ -44,16 +44,7 @@ export default function Results({ results, clearResults }) {
                                     <span className="text-xs text-secondary-dark">{status}</span>
                                 </div>
 
-                                <Options
-                                    options={[
-                                        {
-                                            key: "hide",
-                                            children: "Ocultar Chat",
-                                            onClick: () => setChatHidden(chat),
-                                        },
-                                    ]}
-                                    hiddenUntilHover
-                                />
+                                <Options options={[]} hiddenUntilHover />
                             </div>
                         </div>
                     );
