@@ -2,6 +2,7 @@ import { useContext, useState, useCallback, useEffect } from "react";
 import debounce from "just-debounce-it";
 
 import { SupabaseContext, AppContext } from "context";
+import { RESULTS_EXPIRATION_TIME } from "constants";
 
 export default function useResults(query) {
     const { searchQuery } = useContext(SupabaseContext);
@@ -35,7 +36,13 @@ export default function useResults(query) {
         }
 
         const storedResult = storedResults[query];
-        if (storedResult) return setResults(storedResult);
+        if (storedResult) {
+            if (Date.now() - storedResult.timestamp < RESULTS_EXPIRATION_TIME) {
+                return setResults(storedResult.result);
+            }
+
+            setStoredResults(prevState => ({ ...prevState, [query]: undefined }));
+        }
 
         if (isSearching && searchedQuery === query) return;
 
@@ -47,7 +54,10 @@ export default function useResults(query) {
 
         if (query) setResults(searchedResults);
 
-        setStoredResults(prevState => ({ ...prevState, [searchedQuery]: searchedResults }));
+        setStoredResults(prevState => ({
+            ...prevState,
+            [searchedQuery]: { result: searchedResults, timestamp: Date.now() },
+        }));
         setSearchedResults(null);
     }, [searchedResults]);
 
