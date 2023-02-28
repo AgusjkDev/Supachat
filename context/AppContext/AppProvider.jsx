@@ -12,6 +12,12 @@ export default function AppProvider({ children }) {
         useContext(SupabaseContext);
     const [state, dispatch] = useReducer(AppReducer, initialState);
 
+    const reset = () => {
+        dispatch({
+            type: types.RESET_STATE,
+        });
+    };
+
     const setAlert = alert => {
         dispatch({
             type: types.SET_ALERT,
@@ -115,6 +121,7 @@ export default function AppProvider({ children }) {
         <AppContext.Provider
             value={{
                 ...state,
+                reset,
                 setAlert,
                 setOpenedChat,
                 setChatHidden,

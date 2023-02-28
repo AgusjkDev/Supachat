@@ -1,4 +1,5 @@
 const types = {
+    RESET_STATE: "RESET_STATE",
     SET_ALERT: "SET_ALERT",
     SET_CHATS: "SET_CHATS",
     SET_OPENED_CHAT: "SET_OPENED_CHAT",

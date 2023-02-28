@@ -15,7 +15,7 @@ import { useQuery, useResults } from "hooks";
 
 export default function App() {
     const { profile, logout } = useContext(SupabaseContext);
-    const { openedChat, alert, setOpenedChat, setAlert } = useContext(AppContext);
+    const { openedChat, alert, reset, setAlert, setOpenedChat } = useContext(AppContext);
     const { search, query, updateSearch } = useQuery();
     const { results, getResults } = useResults(query);
 
@@ -23,7 +23,10 @@ export default function App() {
         {
             key: "logout",
             children: "Cerrar Sesión",
-            onClick: () => logout(),
+            onClick: () => {
+                logout();
+                reset();
+            },
         },
     ];
 
