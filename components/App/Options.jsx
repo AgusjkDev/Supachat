@@ -3,7 +3,7 @@ import { Button } from "components";
 import { useOptions } from "hooks";
 import { svgs } from "data";
 
-export default function Options({ options, isChatOptions = false }) {
+export default function Options({ options, hiddenUntilHover = false, small = false }) {
     const { showOptions, toggleShowOptions } = useOptions();
 
     return (
@@ -11,19 +11,19 @@ export default function Options({ options, isChatOptions = false }) {
             <SvgButton
                 ariaLabel="Ver opciones"
                 title="Opciones"
-                {...(isChatOptions && {
+                {...(hiddenUntilHover && {
                     className:
                         "lg:opacity-0 lg:transition-opacity lg:duration-300 lg:group-hover:opacity-100",
                 })}
                 onClick={toggleShowOptions}
                 svg={svgs.options}
-                small={isChatOptions}
+                small={small}
             />
 
             {showOptions && (
                 <div
                     className={`absolute right-1/4 z-[1] w-36 bg-background-800 ${
-                        isChatOptions ? "top-8" : "top-10"
+                        small ? "top-8" : "top-10"
                     }`}
                 >
                     {options.map(({ key, children, onClick }) => (

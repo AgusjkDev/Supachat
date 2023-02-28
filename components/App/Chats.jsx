@@ -1,13 +1,12 @@
 import { useContext } from "react";
 
 import { AppContext } from "context";
-import { ProfilePicture, OptionsButton, Options } from "components/App";
+import { ProfilePicture, Options } from "components/App";
 import { Spinner } from "components";
-import { useOptions, useShownChats } from "hooks";
+import { useShownChats } from "hooks";
 
 export default function Chats() {
     const { chats, openedChat, setOpenedChat, setChatHidden } = useContext(AppContext);
-    const { showOptions, toggleShowOptions } = useOptions();
     const { isLoading, shownChats } = useShownChats(chats);
 
     return (
@@ -62,7 +61,8 @@ export default function Chats() {
                                                     onClick: () => setChatHidden(chat),
                                                 },
                                             ]}
-                                            isChatOptions
+                                            hiddenUntilHover
+                                            small
                                         />
                                     </div>
                                 </div>
