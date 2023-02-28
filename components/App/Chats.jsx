@@ -1,12 +1,13 @@
 import { useContext } from "react";
 
 import { AppContext } from "context";
-import { ProfilePicture, Options } from "components/App";
+import { ProfilePicture, OptionsButton, Options } from "components/App";
 import { Spinner } from "components";
-import { useShownChats } from "hooks";
+import { useOptions, useShownChats } from "hooks";
 
 export default function Chats() {
     const { chats, openedChat, setOpenedChat, setChatHidden } = useContext(AppContext);
+    const { showOptions, toggleShowOptions } = useOptions();
     const { isLoading, shownChats } = useShownChats(chats);
 
     return (
@@ -53,18 +54,16 @@ export default function Chats() {
                                     <div className="flex flex-col justify-evenly">
                                         <span className="text-xs text-secondary-dark">&nbsp;</span>
 
-                                        <div className="lg:opacity-0 lg:transition-opacity lg:duration-300 lg:group-hover:opacity-100">
-                                            <Options
-                                                options={[
-                                                    {
-                                                        key: "hide",
-                                                        children: "Ocultar Chat",
-                                                        onClick: () => setChatHidden(chat),
-                                                    },
-                                                ]}
-                                                small
-                                            />
-                                        </div>
+                                        <Options
+                                            options={[
+                                                {
+                                                    key: "hide",
+                                                    children: "Ocultar Chat",
+                                                    onClick: () => setChatHidden(chat),
+                                                },
+                                            ]}
+                                            isChatOptions
+                                        />
                                     </div>
                                 </div>
                             </div>

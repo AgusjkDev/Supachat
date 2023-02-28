@@ -1,14 +1,14 @@
 import { useContext, useState, useRef, useEffect } from "react";
 
 import { SupabaseContext, AppContext } from "context";
-import { SvgButton, ProfilePicture } from "components/App";
+import { ProfilePicture, SvgButton, Options } from "components/App";
 import { Spinner } from "components";
 import { svgs } from "data";
 import { formatDate } from "helpers";
 
 export default function Chat({ openedChat, exitOpenedChat }) {
     const { profile } = useContext(SupabaseContext);
-    const { sendMessage } = useContext(AppContext);
+    const { setChatHidden, sendMessage } = useContext(AppContext);
     const [message, setMessage] = useState("");
     const lastMessageRef = useRef();
     const messageInputRef = useRef();
@@ -71,11 +71,14 @@ export default function Chat({ openedChat, exitOpenedChat }) {
                     </div>
                 </div>
 
-                <SvgButton
-                    ariaLabel="Ver opciones"
-                    title="Opciones"
-                    onClick={() => {}}
-                    svg={svgs.options}
+                <Options
+                    options={[
+                        {
+                            key: "hide",
+                            children: "Ocultar Chat",
+                            onClick: () => setChatHidden(openedChat),
+                        },
+                    ]}
                 />
             </header>
 
