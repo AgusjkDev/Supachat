@@ -9,7 +9,7 @@ export default function RootLayout({ children }) {
         <html lang="es">
             <head />
 
-            <body>
+            <body className="scrollbar bg-background-900">
                 <SupabaseProvider>
                     <AppProvider>{children}</AppProvider>
                 </SupabaseProvider>

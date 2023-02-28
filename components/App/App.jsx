@@ -32,7 +32,7 @@ export default function App() {
 
     return (
         <>
-            <main className="relative flex bg-background-900">
+            <main className="relative flex">
                 <div className="flex w-full flex-col lg:max-w-md lg:flex-1 lg:border-r-[1px] lg:border-r-background-700">
                     <header className="grid grid-cols-3 items-center border-b-[1px] border-b-background-700 p-3.5 lg:py-2.5">
                         <ProfilePicture {...profile} />
