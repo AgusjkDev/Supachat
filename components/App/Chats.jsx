@@ -4,6 +4,7 @@ import { AppContext } from "context";
 import { ProfilePicture, Options } from "components/App";
 import { Spinner } from "components";
 import { useShownChats } from "hooks";
+import { formatDate } from "helpers";
 
 export default function Chats() {
     const { chats, openedChat, setOpenedChat, setChatHidden } = useContext(AppContext);
@@ -24,7 +25,7 @@ export default function Chats() {
             ) : (
                 <>
                     {shownChats.map(chat => {
-                        const { id, profile } = chat;
+                        const { id, last_message, profile } = chat;
 
                         const isActive = id === openedChat?.id;
 
@@ -47,11 +48,15 @@ export default function Chats() {
                                             {profile.username}
                                         </span>
 
-                                        <span className="text-xs text-secondary-dark">&nbsp;</span>
+                                        <span className="text-xs text-secondary-dark">
+                                            {last_message.content}
+                                        </span>
                                     </div>
 
                                     <div className="flex flex-col justify-evenly">
-                                        <span className="text-xs text-secondary-dark">&nbsp;</span>
+                                        <span className="text-xs text-secondary-dark">
+                                            {formatDate(last_message.created_at, "chat")}
+                                        </span>
 
                                         <Options
                                             options={[

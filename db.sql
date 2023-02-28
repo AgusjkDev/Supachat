@@ -1,17 +1,19 @@
 CREATE OR REPLACE FUNCTION get_profile_chats(p_id uuid)
 RETURNS TABLE (
     chat chats,
+    last_message messages,
     profile profiles
 )
 AS $$
 BEGIN
-    RETURN QUERY SELECT c, p2
+    RETURN QUERY SELECT c, m, p2
     FROM
         chats c
         JOIN chatrooms cr ON cr.id = c.chatroom_id
         JOIN profiles p ON p.id = c.profile_id
         JOIN chats c2 ON c2.chatroom_id = cr.id
         JOIN profiles p2 ON p2.id = c2.profile_id
+        JOIN messages m ON m.id = cr.last_message
     WHERE
         c.profile_id = p_id
         AND p2.id <> p_id;
@@ -65,3 +67,18 @@ BEGIN
     END IF;
 END;
 $$ LANGUAGE plpgsql;
+
+CREATE FUNCTION update_last_message() RETURNS trigger AS $$
+BEGIN
+  UPDATE chatrooms
+  SET last_message = NEW.id
+  WHERE id = NEW.chatroom_id;
+
+  RETURN NEW;
+END;
+$$ LANGUAGE plpgsql;
+
+CREATE TRIGGER update_last_message
+AFTER INSERT ON messages
+FOR EACH ROW
+EXECUTE FUNCTION update_last_message();

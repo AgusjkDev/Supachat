@@ -120,9 +120,10 @@ export default function SupabaseProvider({ children }) {
             return;
         }
 
-        return data.map(({ chat, profile }) => ({
+        return data.map(({ chat, last_message, profile }) => ({
             ...chat,
             created_at: new Date(chat.created_at),
+            last_message: { ...last_message, created_at: new Date(last_message.created_at) },
             profile: { ...profile, created_at: new Date(profile.created_at) },
         }));
     };
