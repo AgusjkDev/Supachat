@@ -1,17 +1,17 @@
-import { useContext, useState, useRef, useEffect } from "react";
+import { useContext } from "react";
 
 import { SupabaseContext, AppContext } from "context";
 import { ProfilePicture, SvgButton, Options } from "components/App";
 import { Spinner } from "components";
 import { svgs } from "data";
+import { useChatMessaging } from "hooks";
 import { formatDate } from "helpers";
 
 export default function Chat({ openedChat, exitOpenedChat }) {
     const { profile } = useContext(SupabaseContext);
-    const { setChatHidden, sendMessage } = useContext(AppContext);
-    const [message, setMessage] = useState("");
-    const lastMessageRef = useRef();
-    const messageInputRef = useRef();
+    const { setChatHidden } = useContext(AppContext);
+    const { message, lastMessageRef, messageInputRef, updateMessage, sendMessage } =
+        useChatMessaging(openedChat);
 
     const { profile: chatterProfile, messages } = openedChat;
     const { username, status } = chatterProfile;
@@ -19,26 +19,8 @@ export default function Chat({ openedChat, exitOpenedChat }) {
     const handleMessageSubmit = e => {
         e.preventDefault();
 
-        const cleanMessage = message.trim();
-        if (!cleanMessage) return;
-
-        sendMessage(openedChat, cleanMessage);
-        setMessage("");
+        sendMessage();
     };
-
-    useEffect(() => {
-        if (!messages || messages.length === 0) return;
-
-        lastMessageRef.current.scrollIntoView();
-    }, [messages]);
-
-    useEffect(() => {
-        if (message) setMessage("");
-
-        if (document.documentElement.clientWidth <= 1024) return;
-
-        messageInputRef.current.focus();
-    }, [openedChat]);
 
     return (
         <div className="flex min-h-screen flex-col">
@@ -148,7 +130,7 @@ export default function Chat({ openedChat, exitOpenedChat }) {
                         placeholder="Escribe un mensaje..."
                         className="w-full rounded-sm border-[1px] border-background-700 bg-transparent p-2.5 text-sm text-secondary placeholder:text-secondary-darker focus:outline focus:outline-2 focus:outline-background-800 sm:w-[90%] md:w-[85%] lg:w-[95%] lg:p-2 2xl:w-[90%]"
                         value={message}
-                        onChange={e => setMessage(e.target.value)}
+                        onChange={e => updateMessage(e.target.value)}
                     />
 
                     <SvgButton
