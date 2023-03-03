@@ -6,6 +6,7 @@ import AppReducer from "./AppReducer";
 import initialState from "./initialState";
 import types from "./types";
 import { ALERT_TIMEOUT } from "constants";
+import { groupMessages } from "helpers";
 
 export default function AppProvider({ children }) {
     const {
@@ -129,10 +130,10 @@ export default function AppProvider({ children }) {
     }, [state.openedChat]);
 
     useEffect(() => {
-        const { chats } = state;
+        const { chats, openedChat } = state;
         if (!chats) return;
 
-        const subscription = realtimeSubscription(
+        const chatsSubscription = realtimeSubscription(
             "INSERT",
             "chats",
             `profile_id=eq.${profile.id}`,
@@ -150,8 +151,34 @@ export default function AppProvider({ children }) {
             }
         );
 
+        const messagesSubscription = realtimeSubscription(
+            "INSERT",
+            "messages",
+            `chatroom_id=in.(${chats.map(({ chatroom_id }) => chatroom_id).join(",")})`,
+            ({ new: message }) => {
+                const receivedMessage = { ...message, created_at: new Date(message.created_at) };
+
+                const chat = chats.find(
+                    ({ chatroom_id }) => chatroom_id === receivedMessage.chatroom_id
+                );
+                const isOpenedChat = chat.id === openedChat?.id;
+
+                updateChats({
+                    ...chat,
+                    last_message: receivedMessage,
+                    ...(isOpenedChat && {
+                        messages: groupMessages([
+                            ...(chat.messages ? chat.messages.flatMap(msg => msg) : []),
+                            receivedMessage,
+                        ]),
+                    }),
+                });
+            }
+        );
+
         return () => {
-            removeSubscription(subscription);
+            removeSubscription(chatsSubscription);
+            removeSubscription(messagesSubscription);
         };
     }, [state.chats, state.openedChat]);
 

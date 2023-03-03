@@ -211,11 +211,8 @@ export default function SupabaseProvider({ children }) {
 
         const { messages, profile: senderProfile } = data;
 
-        const message = { ...messages, created_at: new Date(messages.created_at) };
-
         return {
-            messages: groupMessages([message]),
-            last_message: message,
+            last_message: { ...messages, created_at: new Date(messages.created_at) },
             profile: { ...senderProfile, created_at: new Date(senderProfile.created_at) },
         };
     };
