@@ -3,28 +3,28 @@ import { useContext } from "react";
 import { AppContext } from "context";
 import { ProfilePicture, Options } from "components/App";
 import { Spinner } from "components";
-import { useShownChats } from "hooks";
+import { useFilteredChats } from "hooks";
 import { formatDate } from "helpers";
 
 export default function Chats() {
     const { chats, openedChat, setOpenedChat, setChatHidden } = useContext(AppContext);
-    const { isLoading, shownChats } = useShownChats(chats);
+    const { isLoading, filteredChats } = useFilteredChats(chats);
 
     return (
         <div
-            {...((isLoading || !shownChats) && {
+            {...((isLoading || !filteredChats) && {
                 className: "flex h-full items-center justify-center",
             })}
         >
             {isLoading ? (
                 <Spinner />
-            ) : !shownChats ? (
+            ) : !filteredChats ? (
                 <span className="text-center text-lg font-bold text-primary">
                     ¡No tienes chats!
                 </span>
             ) : (
                 <>
-                    {shownChats.map(chat => {
+                    {filteredChats.map(chat => {
                         const { id, last_message, profile } = chat;
 
                         const isActive = id === openedChat?.id;
